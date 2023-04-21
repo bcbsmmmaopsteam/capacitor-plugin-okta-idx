@@ -74,5 +74,8 @@
     "android": {
       "src": "android"
     }
+  },
+  "dependencies": {
+    "@okta/okta-auth-js": "^7.2.0"
   }
 }
