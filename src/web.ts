@@ -4,10 +4,6 @@ import { OktaAuth } from '@okta/okta-auth-js';
 import type { CapOktaIdxPlugin } from './definitions';
 
 export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
-  }
 
   fetchTokens(data: any): Promise<any> {
 

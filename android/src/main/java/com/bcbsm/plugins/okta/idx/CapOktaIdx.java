@@ -4,8 +4,8 @@ import android.util.Log;
 
 public class CapOktaIdx {
 
-    public String echo(String value) {
-        Log.i("Echo", value);
-        return value;
-    }
+    // public String echo(String value) {
+    //     Log.i("Echo", value);
+    //     return value;
+    // }
 }

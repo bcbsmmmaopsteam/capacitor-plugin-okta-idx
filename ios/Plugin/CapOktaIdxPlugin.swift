@@ -23,8 +23,6 @@ public class CapOktaIdxPlugin: CAPPlugin {
         let clientId = call.getString("clientId") ?? ""
         let redirectUri = call.getString("redirectUri") ?? ""
         let scopes = call.options?["scopes"] as! [String]
-        let username = call.getString("username") ?? ""
-        let password = call.getString("password") ?? ""
 
         let flow = InteractionCodeFlow(
             issuer: URL(string: issuer)!,
@@ -32,94 +30,20 @@ public class CapOktaIdxPlugin: CAPPlugin {
             scopes: scopes.joined(separator: " "),
             redirectUri: URL(string: redirectUri)!)
         
-//       let response =  await flow.start();
+            flow.start { result in
+                switch result {
+                case .success(let response):
+                    
+                    self.proceed(call, response: response)
+                    
+                    break
+                case .failure(_):
+                    break
+                }
+
+            }
         
-    flow.start { result in
-        switch result {
-        case .success(var response):
-            
-            self.proceed(call, response: response)
-            
-            break
-        case .failure(_):
-            break
         }
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-//            guard let remediation = response.remediations[.identify],
-//                  let usernameField = remediation["identifier"]
-////                  let passwordField = remediation["credentials.passcode"]
-//                else {
-//                    call.reject("Login Unsuccesful")
-//                    return
-//                }
-//            usernameField.value = username
-////            remediation["credentials.passcode"]?.value = password
-//
-//            remediation.proceed() { tokenResponse in
-//                switch tokenResponse {
-//                case .success(let userNameResponse):
-//                        guard let remediation = userNameResponse.remediations[.challengeAuthenticator],
-//                            let passwordField = remediation["credentials.passcode"]
-//                        else {
-//                            call.reject("")
-//                            return
-//                        }
-//                        passwordField.value = password
-//                        remediation.proceed() { tokenResponse in
-//                            switch tokenResponse {
-//                            case .success(let finalResponse):
-//                                finalResponse.exchangeCode() { tokens in
-//                                    switch tokens {
-//                                    case .success(let accessTokens):
-//                                        call.resolve([
-//                                            "access_token": accessTokens.accessToken,
-//                                            "refresh_token": accessTokens.refreshToken ?? "",
-//                                            "scope": accessTokens.scope ?? "",
-//                                            "id_token": accessTokens.idToken?.rawValue ?? "",
-//                                            "token_type": accessTokens.tokenType,
-//                                            "expires_in": accessTokens.expiresIn
-//                                        ])
-//                                        break
-//                                    case .failure(_):
-//                                        call.reject("")
-//                                        break
-//                                    }
-//
-//                                }
-//                                break
-//                            case .failure(_):
-//                                call.reject("")
-//                                break
-//                            }
-//                        }
-//
-//                    break
-//                case .failure(_):
-//                    call.reject("")
-//                    break
-//                }
-//            }
-//        case .failure(let error):
-//            call.reject("Login Unsuccesful")
-//            print(error)
-//            break
-//        }
-    }
-        
-    }
     
     func proceed(_ call: CAPPluginCall, response: Response) {
         
@@ -138,35 +62,16 @@ public class CapOktaIdxPlugin: CAPPlugin {
             usernameField.value = username
             remediation["credentials.passcode"]?.value = password
             
-            remediation.proceed() { usernameResponse in
-                switch usernameResponse {
-                case .success(let successResponse):
-                    self.proceed(call, response: successResponse)
-                    break
-                case .failure(_):
-                    call.reject("")
-                    break
-                }
-                return
-            }
-            
+            self.remediationProcess(call, remediation: remediation)
+            return
         }
         else if let remediation = response.remediations[.challengeAuthenticator],
                 let passwordField = remediation["credentials.passcode"] {
             
             passwordField.value = password
             
-            remediation.proceed() { usernameResponse in
-                switch usernameResponse {
-                case .success(let successResponse):
-                    self.proceed(call, response: successResponse)
-                    break
-                case .failure(_):
-                    call.reject("")
-                    break
-                }
-                return
-            }
+            self.remediationProcess(call, remediation: remediation)
+            return
             
         }
         else if response.isLoginSuccessful {
@@ -191,6 +96,20 @@ public class CapOktaIdxPlugin: CAPPlugin {
         }
         else {
             call.reject("")
+            return
+        }
+    }
+    
+    func remediationProcess(_ call: CAPPluginCall, remediation: Remediation) {
+        remediation.proceed() { usernameResponse in
+            switch usernameResponse {
+            case .success(let successResponse):
+                self.proceed(call, response: successResponse)
+                break
+            case .failure(_):
+                call.reject("")
+                break
+            }
             return
         }
     }

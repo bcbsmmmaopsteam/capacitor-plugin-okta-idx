@@ -15,17 +15,6 @@ import com.okta.idx.sdk.api.model.AuthenticationOptions;
 @CapacitorPlugin(name = "CapOktaIdx")
 public class CapOktaIdxPlugin extends Plugin {
 
-    private CapOktaIdx implementation = new CapOktaIdx();
-
-    @PluginMethod
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
-
-        JSObject ret = new JSObject();
-        ret.put("value", implementation.echo(value));
-        call.resolve(ret);
-    }
-
     @PluginMethod
     public void fetchTokens(PluginCall call) throws JSONException {
         IDXAuthenticationWrapper idxAuthenticationWrapper = new IDXAuthenticationWrapper(
