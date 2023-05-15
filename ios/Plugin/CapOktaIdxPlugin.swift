@@ -8,14 +8,6 @@ import OktaIdx
  */
 @objc(CapOktaIdxPlugin)
 public class CapOktaIdxPlugin: CAPPlugin {
-    private let implementation = CapOktaIdx()
-
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
-    }
 
     @objc func fetchTokens(_ call: CAPPluginCall) {
         
