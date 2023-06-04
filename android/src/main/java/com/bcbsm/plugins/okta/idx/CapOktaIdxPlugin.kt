@@ -11,15 +11,10 @@ import com.okta.authfoundation.client.OidcConfiguration
 import com.okta.authfoundation.credential.Token
 import com.okta.idx.kotlin.client.InteractionCodeFlow
 import com.okta.idx.kotlin.client.InteractionCodeFlow.Companion.createInteractionCodeFlow
-import com.okta.idx.kotlin.client.InteractionCodeFlowContext
 import com.okta.idx.kotlin.dto.IdxRemediation
 import com.okta.idx.kotlin.dto.IdxResponse
-import com.okta.idx.sdk.api.client.IDXAuthenticationWrapper
-import com.okta.idx.sdk.api.model.AuthenticationOptions
-import com.okta.idx.sdk.api.model.AuthenticationStatus
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.json.JSONException
 
