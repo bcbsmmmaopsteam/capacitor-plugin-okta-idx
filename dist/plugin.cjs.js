@@ -10,17 +10,13 @@ const CapOktaIdx = core.registerPlugin('CapOktaIdx', {
 });
 
 class CapOktaIdxWeb extends core.WebPlugin {
-    async echo(options) {
-        console.log('ECHO', options);
-        return options;
-    }
     fetchTokens(data) {
         return new Promise((resolve, reject) => {
             const authClient = new oktaAuthJs.OktaAuth({
                 issuer: data.issuer,
                 clientId: data.clientId,
                 redirectUri: data.redirectUri,
-                scopes: data.scopes
+                scopes: (data.scopes).split(' '),
             });
             const username = data.username;
             const password = data.password;
@@ -47,6 +43,11 @@ class CapOktaIdxWeb extends core.WebPlugin {
             })().catch(err => {
                 reject(err);
             });
+        });
+    }
+    refreshToken(data) {
+        return new Promise((resolve) => {
+            resolve(data);
         });
     }
 }

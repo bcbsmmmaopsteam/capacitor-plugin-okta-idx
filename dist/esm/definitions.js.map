@@ -1,1 +1,1 @@
-{"version":3,"file":"definitions.js","sourceRoot":"","sources":["../../src/definitions.ts"],"names":[],"mappings":"","sourcesContent":["export interface CapOktaIdxPlugin {\n  echo(options: { value: string }): Promise<{ value: string }>;\n  fetchTokens(data: any): Promise<any> ;\n}\n"]}
+{"version":3,"file":"definitions.js","sourceRoot":"","sources":["../../src/definitions.ts"],"names":[],"mappings":"","sourcesContent":["export interface CapOktaIdxPlugin {\n  fetchTokens(data: any): Promise<any> ;\n  refreshToken(data: any): Promise<any> ;\n}\n"]}

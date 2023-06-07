@@ -6,22 +6,6 @@
     "tags": [],
     "methods": [
       {
-        "name": "echo",
-        "signature": "(options: { value: string; }) => Promise<{ value: string; }>",
-        "parameters": [
-          {
-            "name": "options",
-            "docs": "",
-            "type": "{ value: string; }"
-          }
-        ],
-        "returns": "Promise<{ value: string; }>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [],
-        "slug": "echo"
-      },
-      {
         "name": "fetchTokens",
         "signature": "(data: any) => Promise<any>",
         "parameters": [
@@ -36,6 +20,22 @@
         "docs": "",
         "complexTypes": [],
         "slug": "fetchtokens"
+      },
+      {
+        "name": "refreshToken",
+        "signature": "(data: any) => Promise<any>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "any"
+          }
+        ],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "refreshtoken"
       }
     ],
     "properties": []

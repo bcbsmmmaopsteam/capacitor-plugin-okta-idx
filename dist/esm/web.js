@@ -1,17 +1,13 @@
 import { WebPlugin } from '@capacitor/core';
 import { OktaAuth } from '@okta/okta-auth-js';
 export class CapOktaIdxWeb extends WebPlugin {
-    async echo(options) {
-        console.log('ECHO', options);
-        return options;
-    }
     fetchTokens(data) {
         return new Promise((resolve, reject) => {
             const authClient = new OktaAuth({
                 issuer: data.issuer,
                 clientId: data.clientId,
                 redirectUri: data.redirectUri,
-                scopes: data.scopes
+                scopes: (data.scopes).split(' '),
             });
             const username = data.username;
             const password = data.password;
@@ -38,6 +34,11 @@ export class CapOktaIdxWeb extends WebPlugin {
             })().catch(err => {
                 reject(err);
             });
+        });
+    }
+    refreshToken(data) {
+        return new Promise((resolve) => {
+            resolve(data);
         });
     }
 }
