@@ -1,4 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
+import type { IdxTransaction } from '@okta/okta-auth-js';
 import { OktaAuth } from '@okta/okta-auth-js';
 
 import type { CapOktaIdxPlugin } from './definitions';
@@ -12,14 +13,14 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
         issuer: data.issuer,
         clientId: data.clientId,
         redirectUri: data.redirectUri,
-        scopes: data.scopes
+        scopes: (data.scopes).split(' '),
       });
   
       const username: string = data.username;
       const password: string = data.password;
   
       (async () => { 
-        const authToken = await authClient.idx.authenticate({
+        const authToken: IdxTransaction = await authClient.idx.authenticate({
           username,
           password
         })
@@ -40,6 +41,12 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
       })().catch(err => {
         reject(err);
       });
+    })
+  }
+
+  refreshToken(data: any): Promise<any> {
+    return new Promise((resolve) => {
+      resolve(data);
     })
   }
 }

@@ -14,12 +14,12 @@ public class CapOktaIdxPlugin: CAPPlugin {
         let issuer = call.getString("issuer") ?? ""
         let clientId = call.getString("clientId") ?? ""
         let redirectUri = call.getString("redirectUri") ?? ""
-        let scopes = call.options?["scopes"] as! [String]
+        let scopes = call.getString("scopes") ?? ""
 
         let flow = InteractionCodeFlow(
             issuer: URL(string: issuer)!,
             clientId: clientId,
-            scopes: scopes.joined(separator: " "),
+            scopes: scopes,
             redirectUri: URL(string: redirectUri)!)
         
             flow.start { result in
@@ -36,6 +36,44 @@ public class CapOktaIdxPlugin: CAPPlugin {
             }
         
         }
+    
+    @objc func refreshToken(_ call: CAPPluginCall) {
+        let issuer = call.getString("issuer") ?? ""
+        let clientId = call.getString("clientId") ?? ""
+        let redirectUri = call.getString("redirectUri") ?? ""
+        let scopes = call.getString("scopes") ?? ""
+        let refreshToken = call.getString("refresh_token") ?? ""
+        
+        let flow = InteractionCodeFlow(
+            issuer: URL(string: issuer)!,
+            clientId: clientId,
+            scopes: scopes,
+            redirectUri: URL(string: redirectUri)!)
+        
+        Token.from(refreshToken: refreshToken, using: flow.client) { result in
+            switch result {
+            case .success(let accessTokens):
+                
+                call.resolve([
+                    "access_token": accessTokens.accessToken,
+                    "refresh_token": accessTokens.refreshToken ?? "",
+                    "scope": accessTokens.scope ?? "",
+                    "id_token": accessTokens.idToken?.rawValue ?? "",
+                    "token_type": accessTokens.tokenType,
+                    "expires_in": accessTokens.expiresIn
+                ])
+                
+                break
+            case .failure(_):
+                call.reject("")
+                break
+            }
+        }
+ 
+//        flow..client.refresh(tokens) { result in
+//
+//        }
+    }
     
     func proceed(_ call: CAPPluginCall, response: Response) {
         
