@@ -60,7 +60,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
                     "scope": accessTokens.scope ?? "",
                     "id_token": accessTokens.idToken?.rawValue ?? "",
                     "token_type": accessTokens.tokenType,
-                    "expires_in": (Int64(Date().timeIntervalSince1970) + Int64(accessTokens.expiresIn)) * 1000
+                    "expires_in": accessTokens.expiresIn
                 ])
                 
                 break
@@ -111,7 +111,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
                         "scope": accessTokens.scope ?? "",
                         "id_token": accessTokens.idToken?.rawValue ?? "",
                         "token_type": accessTokens.tokenType,
-                        "expires_in": (Int64(Date().timeIntervalSince1970) + Int64(accessTokens.expiresIn)) * 1000
+                        "expires_in": accessTokens.expiresIn
                     ])
                     break
                 case .failure(_):

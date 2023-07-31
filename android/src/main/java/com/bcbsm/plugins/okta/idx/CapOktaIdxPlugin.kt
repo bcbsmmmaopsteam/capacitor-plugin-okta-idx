@@ -93,7 +93,7 @@ class CapOktaIdxPlugin : Plugin() {
         if (tokens != null) {
             val ret = JSObject();
             ret.put("access_token", tokens.accessToken);
-            ret.put("expires_in", System.currentTimeMillis() + (tokens.expiresIn * 1000));
+            ret.put("expires_in", tokens.expiresIn);
             ret.put("id_token", tokens.idToken);
             ret.put("refresh_token", tokens.refreshToken);
             ret.put("scope", tokens.scope);

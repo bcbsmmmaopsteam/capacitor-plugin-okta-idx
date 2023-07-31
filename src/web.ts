@@ -26,14 +26,13 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
         })
     
         if (authToken.status === 'SUCCESS') {
-          const expiresAt = authToken.tokens?.accessToken?.expiresAt;
           const tokenResponse = {
             access_token: authToken.tokens?.accessToken?.accessToken,
             refresh_token: authToken.tokens?.refreshToken?.refreshToken,
             scope: authToken.tokens?.accessToken?.scopes.join(' '),
             id_token: authToken.tokens?.idToken?.idToken,
             token_type: authToken.tokens?.accessToken?.tokenType,
-            expires_in: (expiresAt ? expiresAt * 1000 : expiresAt)
+            expires_in: authToken.tokens?.accessToken?.expiresAt
           }
           resolve(tokenResponse);
         }else {
