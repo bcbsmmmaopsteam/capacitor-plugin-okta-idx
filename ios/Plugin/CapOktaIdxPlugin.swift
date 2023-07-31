@@ -60,7 +60,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
                     "scope": accessTokens.scope ?? "",
                     "id_token": accessTokens.idToken?.rawValue ?? "",
                     "token_type": accessTokens.tokenType,
-                    "expires_in": accessTokens.expiresIn
+                    "expires_in": (Int64(Date().timeIntervalSince1970) + Int64(accessTokens.expiresIn)) * 1000
                 ])
                 
                 break
@@ -69,10 +69,6 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 break
             }
         }
- 
-//        flow..client.refresh(tokens) { result in
-//
-//        }
     }
     
     func proceed(_ call: CAPPluginCall, response: Response) {
@@ -108,13 +104,14 @@ public class CapOktaIdxPlugin: CAPPlugin {
             response.exchangeCode() { tokens in
                 switch tokens {
                 case .success(let accessTokens):
+                    
                     call.resolve([
                         "access_token": accessTokens.accessToken,
                         "refresh_token": accessTokens.refreshToken ?? "",
                         "scope": accessTokens.scope ?? "",
                         "id_token": accessTokens.idToken?.rawValue ?? "",
                         "token_type": accessTokens.tokenType,
-                        "expires_in": accessTokens.expiresIn
+                        "expires_in": (Int64(Date().timeIntervalSince1970) + Int64(accessTokens.expiresIn)) * 1000
                     ])
                     break
                 case .failure(_):
