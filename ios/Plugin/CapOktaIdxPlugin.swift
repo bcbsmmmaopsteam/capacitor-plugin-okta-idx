@@ -69,10 +69,6 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 break
             }
         }
- 
-//        flow..client.refresh(tokens) { result in
-//
-//        }
     }
     
     func proceed(_ call: CAPPluginCall, response: Response) {
@@ -108,6 +104,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
             response.exchangeCode() { tokens in
                 switch tokens {
                 case .success(let accessTokens):
+                    
                     call.resolve([
                         "access_token": accessTokens.accessToken,
                         "refresh_token": accessTokens.refreshToken ?? "",
