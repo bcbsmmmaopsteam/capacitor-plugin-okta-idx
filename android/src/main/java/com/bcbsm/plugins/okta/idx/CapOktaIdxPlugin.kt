@@ -48,7 +48,7 @@ class CapOktaIdxPlugin : Plugin() {
     fun initializeConnection(call: PluginCall): OidcClient {
         val oidcConfig = OidcConfiguration(
                 call.getString("clientId")!!,
-                "openid profile email offline_access"
+                call.getString("scopes")!!
         )
 
         return OidcClient.createFromDiscoveryUrl(
