@@ -40,7 +40,12 @@ class CapOktaIdxPlugin : Plugin() {
         val oidcClient: OidcClient = initializeConnection(call);
         GlobalScope.launch {
             val tokensResult: OidcClientResult<Token>  = oidcClient.refreshToken(call.getString("refresh_token")!!);
-            processResponse(call, tokensResult.getOrThrow());
+            try {
+                var tokens = tokensResult.getOrThrow();
+                processResponse(call, tokens);
+            }catch (e: Exception) {
+                call.reject(e.message);
+            }
         }
 
     }

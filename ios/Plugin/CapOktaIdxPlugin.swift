@@ -64,8 +64,8 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 ])
                 
                 break
-            case .failure(_):
-                call.reject("")
+            case .failure(let error):
+                call.reject(error.errorDescription ?? "")
                 break
             }
         }
