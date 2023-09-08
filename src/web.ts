@@ -20,6 +20,7 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
       const password: string = data.password;
   
       (async () => { 
+        await authClient.idx.clearTransactionMeta();
         const authToken: IdxTransaction = await authClient.idx.authenticate({
           username,
           password

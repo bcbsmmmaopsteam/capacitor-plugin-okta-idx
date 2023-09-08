@@ -22,6 +22,7 @@ class CapOktaIdxWeb extends core.WebPlugin {
             const password = data.password;
             (async () => {
                 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+                await authClient.idx.clearTransactionMeta();
                 const authToken = await authClient.idx.authenticate({
                     username,
                     password
