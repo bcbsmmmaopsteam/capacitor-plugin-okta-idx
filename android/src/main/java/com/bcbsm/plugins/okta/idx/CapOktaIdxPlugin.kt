@@ -44,7 +44,7 @@ class CapOktaIdxPlugin : Plugin() {
                 var tokens = tokensResult.getOrThrow();
                 processResponse(call, tokens);
             }catch (e: Exception) {
-                call.reject(e.message);
+                call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
             }
         }
 
@@ -74,7 +74,7 @@ class CapOktaIdxPlugin : Plugin() {
                     var tokens = tokensResult.getOrThrow();
                     processResponse(call, tokens);
                 } catch (e: Exception) {
-                    call.reject(e.message);
+                    call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
                 }
             }
         }else {
@@ -98,7 +98,7 @@ class CapOktaIdxPlugin : Plugin() {
                     var tokens = clientResult.getOrThrow();
                     proceed(call, interactionCodeFlow, tokens);
                 } catch (e: Exception) {
-                    call.reject(e.message);
+                    call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
                 }
             }
         }
