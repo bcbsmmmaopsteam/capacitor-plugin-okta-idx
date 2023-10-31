@@ -44,7 +44,7 @@ class CapOktaIdxPlugin : Plugin() {
                 var tokens = tokensResult.getOrThrow();
                 processResponse(call, tokens);
             }catch (e: Exception) {
-                call.reject(e.message);
+                call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
             }
         }
 
@@ -70,7 +70,12 @@ class CapOktaIdxPlugin : Plugin() {
             remidiation = idxResponse.remediations.get(IdxRemediation.Type.ISSUE);
             GlobalScope.launch {
                 var tokensResult: OidcClientResult<Token>  = interactionCodeFlow.exchangeInteractionCodeForTokens(remidiation!!);
-                processResponse(call, tokensResult.getOrThrow());
+                try {
+                    var tokens = tokensResult.getOrThrow();
+                    processResponse(call, tokens);
+                } catch (e: Exception) {
+                    call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
+                }
             }
         }else {
             if (idxResponse.remediations.get(IdxRemediation.Type.IDENTIFY) != null) {
@@ -89,7 +94,12 @@ class CapOktaIdxPlugin : Plugin() {
         if (remidiation != null) {
             GlobalScope.launch {
                 val clientResult: OidcClientResult<IdxResponse> = interactionCodeFlow.proceed(remidiation);
-                proceed(call, interactionCodeFlow, clientResult.getOrThrow());
+                try {
+                    var tokens = clientResult.getOrThrow();
+                    proceed(call, interactionCodeFlow, tokens);
+                } catch (e: Exception) {
+                    call.reject(e.message, (e as OidcClientResult.Error.HttpResponseException).responseCode.toString());
+                }
             }
         }
     }
