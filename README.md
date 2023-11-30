@@ -13,13 +13,30 @@ npx cap sync
 
 <docgen-index>
 
+* [`initializeOkta(...)`](#initializeokta)
 * [`fetchTokens(...)`](#fetchtokens)
 * [`refreshToken(...)`](#refreshtoken)
+* [`selectAuthenticator(...)`](#selectauthenticator)
+* [`verifyOtp(...)`](#verifyotp)
+* [`resendOtp()`](#resendotp)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### initializeOkta(...)
+
+```typescript
+initializeOkta(data: any) => void
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+--------------------
+
 
 ### fetchTokens(...)
 
@@ -45,6 +62,47 @@ refreshToken(data: any) => Promise<any>
 | Param      | Type             |
 | ---------- | ---------------- |
 | **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### selectAuthenticator(...)
+
+```typescript
+selectAuthenticator(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### verifyOtp(...)
+
+```typescript
+verifyOtp(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### resendOtp()
+
+```typescript
+resendOtp() => Promise<any>
+```
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 

@@ -6,11 +6,19 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
     });
 
     class CapOktaIdxWeb extends core.WebPlugin {
+        initializeOkta(data) {
+            this.authClient = new oktaAuthJs.OktaAuth({
+                issuer: data.issuer,
+                clientId: data.clientId,
+                redirectUri: data.redirectUri,
+                scopes: (data.scopes).split(' '),
+            });
+        }
         fetchTokens(data) {
             // window.sessionStorage.clear();
             // window.localStorage.clear();
             return new Promise((resolve, reject) => {
-                const authClient = new oktaAuthJs.OktaAuth({
+                this.authClient = new oktaAuthJs.OktaAuth({
                     issuer: data.issuer,
                     clientId: data.clientId,
                     redirectUri: data.redirectUri,
@@ -22,7 +30,7 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
                     // authClient.idx.clearTransactionMeta();
                     // authClient.tokenManager.clear();
                     // authClient.transactionManager.clear();
-                    const authToken = await authClient.idx.startTransaction();
+                    const authToken = await this.authClient.idx.startTransaction();
                     if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
                         const tokenResponse = {
                             access_token: (_b = (_a = authToken.tokens) === null || _a === void 0 ? void 0 : _a.accessToken) === null || _b === void 0 ? void 0 : _b.accessToken,
@@ -35,9 +43,9 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
                         resolve(tokenResponse);
                     }
                     else if (authToken.status === oktaAuthJs.IdxStatus.PENDING) {
-                        await this.proceed(authToken, authClient, data, resolve, reject);
+                        await this.proceed(authToken, this.authClient, data, resolve, reject);
                     }
-                    {
+                    else {
                         reject();
                     }
                 })().catch(err => {
@@ -46,7 +54,7 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
             });
         }
         async proceed(authToken, authClient, data, resolve, reject) {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
             const username = data.username;
             const password = data.password;
             if (((_a = authToken === null || authToken === void 0 ? void 0 : authToken.messages) === null || _a === void 0 ? void 0 : _a.length) > 0) {
@@ -58,8 +66,43 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
                 }
             }
             else if (((_f = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _f === void 0 ? void 0 : _f.name) == 'challenge-authenticator' && ((_g = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _g === void 0 ? void 0 : _g.inputs) && ((_j = (_h = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _h === void 0 ? void 0 : _h.inputs) === null || _j === void 0 ? void 0 : _j.length) > 0) {
+                // let verificationCode = '1234';
                 if (authToken.nextStep.inputs[0].name === 'password') {
                     authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: password });
+                }
+                else if (authToken.nextStep.inputs[0].name === 'verificationCode') {
+                    // authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: verificationCode});
+                    resolve({ remediation: authToken.nextStep.inputs[0].name });
+                    return;
+                }
+            }
+            else if (((_k = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _k === void 0 ? void 0 : _k.name) == 'select-authenticator-authenticate' && ((_l = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _l === void 0 ? void 0 : _l.inputs) && ((_o = (_m = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _m === void 0 ? void 0 : _m.inputs) === null || _o === void 0 ? void 0 : _o.length) > 0) {
+                const passwordOption = (_p = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _p === void 0 ? void 0 : _p.inputs[0].options.find((res) => res.value === "okta_password");
+                if (passwordOption) {
+                    authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: oktaAuthJs.AuthenticatorKey.OKTA_PASSWORD });
+                }
+                else {
+                    resolve({
+                        remediation: (_q = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _q === void 0 ? void 0 : _q.name,
+                        options: (_r = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _r === void 0 ? void 0 : _r.inputs[0].options
+                    });
+                    return;
+                }
+                // else {
+                //   resolve({'remediation': authToken?.nextStep?.name});
+                // }
+                // if (authToken.nextStep.inputs[0].name === 'authenticator') {
+                //     authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_EMAIL});
+                //   }
+            }
+            else if (((_s = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _s === void 0 ? void 0 : _s.name) == 'authenticator-verification-data' && ((_t = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _t === void 0 ? void 0 : _t.inputs) && ((_v = (_u = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _u === void 0 ? void 0 : _u.inputs) === null || _v === void 0 ? void 0 : _v.length) > 0) {
+                if (authToken.nextStep.inputs[0].name === 'methodType') {
+                    if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
+                        authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: (_x = (_w = authToken.nextStep.inputs[0]) === null || _w === void 0 ? void 0 : _w.options[0]) === null || _x === void 0 ? void 0 : _x.value });
+                    }
+                    else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
+                        authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: (_z = (_y = authToken.nextStep.inputs[0]) === null || _y === void 0 ? void 0 : _y.options[0]) === null || _z === void 0 ? void 0 : _z.value });
+                    }
                 }
             }
             if (authToken.status === oktaAuthJs.IdxStatus.PENDING) {
@@ -67,12 +110,12 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
             }
             else if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
                 const tokenResponse = {
-                    access_token: (_l = (_k = authToken.tokens) === null || _k === void 0 ? void 0 : _k.accessToken) === null || _l === void 0 ? void 0 : _l.accessToken,
-                    refresh_token: (_o = (_m = authToken.tokens) === null || _m === void 0 ? void 0 : _m.refreshToken) === null || _o === void 0 ? void 0 : _o.refreshToken,
-                    scope: (_q = (_p = authToken.tokens) === null || _p === void 0 ? void 0 : _p.accessToken) === null || _q === void 0 ? void 0 : _q.scopes.join(' '),
-                    id_token: (_s = (_r = authToken.tokens) === null || _r === void 0 ? void 0 : _r.idToken) === null || _s === void 0 ? void 0 : _s.idToken,
-                    token_type: (_u = (_t = authToken.tokens) === null || _t === void 0 ? void 0 : _t.accessToken) === null || _u === void 0 ? void 0 : _u.tokenType,
-                    expires_in: (_w = (_v = authToken.tokens) === null || _v === void 0 ? void 0 : _v.accessToken) === null || _w === void 0 ? void 0 : _w.expiresAt
+                    access_token: (_1 = (_0 = authToken.tokens) === null || _0 === void 0 ? void 0 : _0.accessToken) === null || _1 === void 0 ? void 0 : _1.accessToken,
+                    refresh_token: (_3 = (_2 = authToken.tokens) === null || _2 === void 0 ? void 0 : _2.refreshToken) === null || _3 === void 0 ? void 0 : _3.refreshToken,
+                    scope: (_5 = (_4 = authToken.tokens) === null || _4 === void 0 ? void 0 : _4.accessToken) === null || _5 === void 0 ? void 0 : _5.scopes.join(' '),
+                    id_token: (_7 = (_6 = authToken.tokens) === null || _6 === void 0 ? void 0 : _6.idToken) === null || _7 === void 0 ? void 0 : _7.idToken,
+                    token_type: (_9 = (_8 = authToken.tokens) === null || _8 === void 0 ? void 0 : _8.accessToken) === null || _9 === void 0 ? void 0 : _9.tokenType,
+                    expires_in: (_11 = (_10 = authToken.tokens) === null || _10 === void 0 ? void 0 : _10.accessToken) === null || _11 === void 0 ? void 0 : _11.expiresAt
                 };
                 resolve(tokenResponse);
             }
@@ -80,6 +123,58 @@ var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
         refreshToken(data) {
             return new Promise((resolve) => {
                 resolve(data);
+            });
+        }
+        selectAuthenticator(data) {
+            return new Promise((resolve, reject) => {
+                const authClient = new oktaAuthJs.OktaAuth({
+                    issuer: data.issuer,
+                    clientId: data.clientId,
+                    redirectUri: data.redirectUri,
+                    scopes: (data.scopes).split(' '),
+                });
+                (async () => {
+                    let authToken;
+                    if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
+                        authToken = await authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.OKTA_EMAIL });
+                    }
+                    else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
+                        authToken = await authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.PHONE_NUMBER });
+                    }
+                    await this.proceed(authToken, authClient, data, resolve, reject);
+                })().catch(err => {
+                    reject(err);
+                });
+            });
+        }
+        verifyOtp(data) {
+            return new Promise((resolve, reject) => {
+                const authClient = new oktaAuthJs.OktaAuth({
+                    issuer: data.issuer,
+                    clientId: data.clientId,
+                    redirectUri: data.redirectUri,
+                    scopes: (data.scopes).split(' '),
+                });
+                (async () => {
+                    const authToken = await authClient.idx.proceed({ verificationCode: data === null || data === void 0 ? void 0 : data.otp });
+                    await this.proceed(authToken, authClient, data, resolve, reject);
+                })().catch(err => {
+                    reject(err);
+                });
+            });
+        }
+        resendOtp() {
+            return new Promise((resolve, reject) => {
+                (async () => {
+                    var _a;
+                    const authToken = await this.authClient.idx.proceed({ resend: true });
+                    console.log(authToken);
+                    resolve({
+                        remediation: (_a = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _a === void 0 ? void 0 : _a.name
+                    });
+                })().catch(err => {
+                    reject(err);
+                });
             });
         }
     }
