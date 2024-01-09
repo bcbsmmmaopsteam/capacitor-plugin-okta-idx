@@ -1,6 +1,6 @@
 {
   "name": "capacitor-plugin-okta-idx",
-  "version": "0.0.1",
+  "version": "5.26.0",
   "description": "Okta",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -17,10 +17,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://dxcoderepo.bcbsm.com/projects/MMA/repos/capacitor-plugin-okta-idx.git.git"
+    "url": "git+https://githubprod.bcbsm.com/BCBSM/dx_capacitor-plugin-okta-idx.git#main"
   },
   "bugs": {
-    "url": "https://dxcoderepo.bcbsm.com/projects/MMA/repos/capacitor-plugin-okta-idx.git/issues"
+    "url": "https://githubprod.bcbsm.com/BCBSM/dx_capacitor-plugin-okta-idx.git/issues"
   },
   "keywords": [
     "capacitor",
