@@ -19,6 +19,7 @@ npx cap sync
 * [`selectAuthenticator(...)`](#selectauthenticator)
 * [`verifyOtp(...)`](#verifyotp)
 * [`resendOtp()`](#resendotp)
+* [`selectAlternateAuthenticator(...)`](#selectalternateauthenticator)
 
 </docgen-index>
 
@@ -103,6 +104,21 @@ verifyOtp(data: any) => Promise<any>
 ```typescript
 resendOtp() => Promise<any>
 ```
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### selectAlternateAuthenticator(...)
+
+```typescript
+selectAlternateAuthenticator(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 

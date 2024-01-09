@@ -58,37 +58,37 @@ class CapOktaIdxWeb extends core.WebPlugin {
         });
     }
     async proceed(authToken, authClient, data, resolve, reject) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16;
         const username = data.username;
         const password = data.password;
         if (((_a = authToken === null || authToken === void 0 ? void 0 : authToken.messages) === null || _a === void 0 ? void 0 : _a.length) > 0) {
-            reject({ message: authToken.messages[0].message });
+            reject({ message: (_b = authToken.messages[0]) === null || _b === void 0 ? void 0 : _b.message, code: (_d = (_c = authToken.messages[0]) === null || _c === void 0 ? void 0 : _c.i18n) === null || _d === void 0 ? void 0 : _d.key });
         }
-        else if (((_b = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _b === void 0 ? void 0 : _b.name) == 'identify' && ((_c = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _c === void 0 ? void 0 : _c.inputs) && ((_e = (_d = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _d === void 0 ? void 0 : _d.inputs) === null || _e === void 0 ? void 0 : _e.length) > 0) {
+        else if (((_e = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _e === void 0 ? void 0 : _e.name) == 'identify' && ((_f = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _f === void 0 ? void 0 : _f.inputs) && ((_h = (_g = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _g === void 0 ? void 0 : _g.inputs) === null || _h === void 0 ? void 0 : _h.length) > 0) {
             if (authToken.nextStep.inputs[0].name === 'username') {
-                authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: username });
+                authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: username, [authToken.nextStep.inputs[1].name]: data.rememberme });
             }
         }
-        else if (((_f = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _f === void 0 ? void 0 : _f.name) == 'challenge-authenticator' && ((_g = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _g === void 0 ? void 0 : _g.inputs) && ((_j = (_h = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _h === void 0 ? void 0 : _h.inputs) === null || _j === void 0 ? void 0 : _j.length) > 0) {
+        else if (((_j = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _j === void 0 ? void 0 : _j.name) == 'challenge-authenticator' && ((_k = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _k === void 0 ? void 0 : _k.inputs) && ((_m = (_l = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _l === void 0 ? void 0 : _l.inputs) === null || _m === void 0 ? void 0 : _m.length) > 0) {
             // let verificationCode = '1234';
             if (authToken.nextStep.inputs[0].name === 'password') {
                 authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: password });
             }
             else if (authToken.nextStep.inputs[0].name === 'verificationCode') {
-                // authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: verificationCode});
-                resolve({ remediation: authToken.nextStep.inputs[0].name });
+                resolve({ remediation: (_o = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _o === void 0 ? void 0 : _o.name });
                 return;
             }
         }
-        else if (((_k = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _k === void 0 ? void 0 : _k.name) == 'select-authenticator-authenticate' && ((_l = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _l === void 0 ? void 0 : _l.inputs) && ((_o = (_m = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _m === void 0 ? void 0 : _m.inputs) === null || _o === void 0 ? void 0 : _o.length) > 0) {
-            const passwordOption = (_p = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _p === void 0 ? void 0 : _p.inputs[0].options.find((res) => res.value === "okta_password");
+        else if (((_p = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _p === void 0 ? void 0 : _p.name) == 'select-authenticator-authenticate' && ((_q = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _q === void 0 ? void 0 : _q.inputs) && ((_s = (_r = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _r === void 0 ? void 0 : _r.inputs) === null || _s === void 0 ? void 0 : _s.length) > 0) {
+            const passwordOption = (_t = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _t === void 0 ? void 0 : _t.inputs[0].options.find((res) => res.value === "okta_password");
             if (passwordOption) {
                 authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: oktaAuthJs.AuthenticatorKey.OKTA_PASSWORD });
             }
             else {
                 resolve({
-                    remediation: (_q = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _q === void 0 ? void 0 : _q.name,
-                    options: (_r = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _r === void 0 ? void 0 : _r.inputs[0].options
+                    remediation: (_u = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _u === void 0 ? void 0 : _u.name,
+                    email: (_z = (_y = (_x = (_w = (_v = authToken === null || authToken === void 0 ? void 0 : authToken.neededToProceed[0]) === null || _v === void 0 ? void 0 : _v.value[0]) === null || _w === void 0 ? void 0 : _w.options[0]) === null || _x === void 0 ? void 0 : _x.relatesTo) === null || _y === void 0 ? void 0 : _y.profile) === null || _z === void 0 ? void 0 : _z.email,
+                    phoneNumber: (_4 = (_3 = (_2 = (_1 = (_0 = authToken === null || authToken === void 0 ? void 0 : authToken.neededToProceed[0]) === null || _0 === void 0 ? void 0 : _0.value[0]) === null || _1 === void 0 ? void 0 : _1.options[1]) === null || _2 === void 0 ? void 0 : _2.relatesTo) === null || _3 === void 0 ? void 0 : _3.profile) === null || _4 === void 0 ? void 0 : _4.phoneNumber
                 });
                 return;
             }
@@ -99,27 +99,17 @@ class CapOktaIdxWeb extends core.WebPlugin {
             //     authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_EMAIL});
             //   }
         }
-        else if (((_s = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _s === void 0 ? void 0 : _s.name) == 'authenticator-verification-data' && ((_t = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _t === void 0 ? void 0 : _t.inputs) && ((_v = (_u = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _u === void 0 ? void 0 : _u.inputs) === null || _v === void 0 ? void 0 : _v.length) > 0) {
-            if (authToken.nextStep.inputs[0].name === 'methodType') {
-                if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
-                    authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: (_x = (_w = authToken.nextStep.inputs[0]) === null || _w === void 0 ? void 0 : _w.options[0]) === null || _x === void 0 ? void 0 : _x.value });
-                }
-                else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
-                    authToken = await authClient.idx.proceed({ [authToken.nextStep.inputs[0].name]: (_z = (_y = authToken.nextStep.inputs[0]) === null || _y === void 0 ? void 0 : _y.options[0]) === null || _z === void 0 ? void 0 : _z.value });
-                }
-            }
-        }
         if (authToken.status === oktaAuthJs.IdxStatus.PENDING) {
             await this.proceed(authToken, authClient, data, resolve, reject);
         }
         else if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
             const tokenResponse = {
-                access_token: (_1 = (_0 = authToken.tokens) === null || _0 === void 0 ? void 0 : _0.accessToken) === null || _1 === void 0 ? void 0 : _1.accessToken,
-                refresh_token: (_3 = (_2 = authToken.tokens) === null || _2 === void 0 ? void 0 : _2.refreshToken) === null || _3 === void 0 ? void 0 : _3.refreshToken,
-                scope: (_5 = (_4 = authToken.tokens) === null || _4 === void 0 ? void 0 : _4.accessToken) === null || _5 === void 0 ? void 0 : _5.scopes.join(' '),
-                id_token: (_7 = (_6 = authToken.tokens) === null || _6 === void 0 ? void 0 : _6.idToken) === null || _7 === void 0 ? void 0 : _7.idToken,
-                token_type: (_9 = (_8 = authToken.tokens) === null || _8 === void 0 ? void 0 : _8.accessToken) === null || _9 === void 0 ? void 0 : _9.tokenType,
-                expires_in: (_11 = (_10 = authToken.tokens) === null || _10 === void 0 ? void 0 : _10.accessToken) === null || _11 === void 0 ? void 0 : _11.expiresAt
+                access_token: (_6 = (_5 = authToken.tokens) === null || _5 === void 0 ? void 0 : _5.accessToken) === null || _6 === void 0 ? void 0 : _6.accessToken,
+                refresh_token: (_8 = (_7 = authToken.tokens) === null || _7 === void 0 ? void 0 : _7.refreshToken) === null || _8 === void 0 ? void 0 : _8.refreshToken,
+                scope: (_10 = (_9 = authToken.tokens) === null || _9 === void 0 ? void 0 : _9.accessToken) === null || _10 === void 0 ? void 0 : _10.scopes.join(' '),
+                id_token: (_12 = (_11 = authToken.tokens) === null || _11 === void 0 ? void 0 : _11.idToken) === null || _12 === void 0 ? void 0 : _12.idToken,
+                token_type: (_14 = (_13 = authToken.tokens) === null || _13 === void 0 ? void 0 : _13.accessToken) === null || _14 === void 0 ? void 0 : _14.tokenType,
+                expires_in: (_16 = (_15 = authToken.tokens) === null || _15 === void 0 ? void 0 : _15.accessToken) === null || _16 === void 0 ? void 0 : _16.expiresAt
             };
             resolve(tokenResponse);
         }
@@ -131,21 +121,15 @@ class CapOktaIdxWeb extends core.WebPlugin {
     }
     selectAuthenticator(data) {
         return new Promise((resolve, reject) => {
-            const authClient = new oktaAuthJs.OktaAuth({
-                issuer: data.issuer,
-                clientId: data.clientId,
-                redirectUri: data.redirectUri,
-                scopes: (data.scopes).split(' '),
-            });
             (async () => {
                 let authToken;
                 if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
-                    authToken = await authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.OKTA_EMAIL });
+                    authToken = await this.authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.OKTA_EMAIL, methodType: data === null || data === void 0 ? void 0 : data.type });
                 }
                 else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
-                    authToken = await authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.PHONE_NUMBER });
+                    authToken = await this.authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.PHONE_NUMBER, methodType: data === null || data === void 0 ? void 0 : data.methodType });
                 }
-                await this.proceed(authToken, authClient, data, resolve, reject);
+                await this.proceed(authToken, this.authClient, data, resolve, reject);
             })().catch(err => {
                 reject(err);
             });
@@ -153,15 +137,9 @@ class CapOktaIdxWeb extends core.WebPlugin {
     }
     verifyOtp(data) {
         return new Promise((resolve, reject) => {
-            const authClient = new oktaAuthJs.OktaAuth({
-                issuer: data.issuer,
-                clientId: data.clientId,
-                redirectUri: data.redirectUri,
-                scopes: (data.scopes).split(' '),
-            });
             (async () => {
-                const authToken = await authClient.idx.proceed({ verificationCode: data === null || data === void 0 ? void 0 : data.otp });
-                await this.proceed(authToken, authClient, data, resolve, reject);
+                const authToken = await this.authClient.idx.proceed({ verificationCode: data === null || data === void 0 ? void 0 : data.otp });
+                await this.proceed(authToken, this.authClient, data, resolve, reject);
             })().catch(err => {
                 reject(err);
             });
@@ -170,12 +148,32 @@ class CapOktaIdxWeb extends core.WebPlugin {
     resendOtp() {
         return new Promise((resolve, reject) => {
             (async () => {
-                var _a;
+                var _a, _b, _c, _d;
                 const authToken = await this.authClient.idx.proceed({ resend: true });
-                console.log(authToken);
-                resolve({
-                    remediation: (_a = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _a === void 0 ? void 0 : _a.name
-                });
+                if (((_a = authToken === null || authToken === void 0 ? void 0 : authToken.messages) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    reject({ message: authToken.messages[0].message, code: (_c = (_b = authToken.messages[0]) === null || _b === void 0 ? void 0 : _b.i18n) === null || _c === void 0 ? void 0 : _c.key });
+                }
+                else {
+                    resolve({
+                        remediation: (_d = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _d === void 0 ? void 0 : _d.name
+                    });
+                }
+            })().catch(err => {
+                reject(err);
+            });
+        });
+    }
+    selectAlternateAuthenticator(data) {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                let authToken;
+                if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
+                    authToken = await this.authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.OKTA_EMAIL, methodType: data === null || data === void 0 ? void 0 : data.type });
+                }
+                else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
+                    authToken = await this.authClient.idx.proceed({ authenticator: oktaAuthJs.AuthenticatorKey.PHONE_NUMBER, methodType: data === null || data === void 0 ? void 0 : data.methodType });
+                }
+                await this.proceed(authToken, this.authClient, data, resolve, reject);
             })().catch(err => {
                 reject(err);
             });

@@ -61,16 +61,50 @@ class CapOktaIdxPlugin : Plugin() {
     @PluginMethod
     @Throws(JSONException::class)
     fun selectAuthenticator(call: PluginCall) {
-        var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "okta_email" }!!
-        remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
-        makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+        if (call.getString("type") == "email") {
+            var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "okta_email" }!!
+            remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
+            makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+        }else if (call.getString("type") == "phone") {
+            var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "phone_number" }!!
+            var methodOptions = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.options
+            remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
+            var methodIndex = 0;
+            if (call.getString("methodType") == "voice") {
+                methodIndex = methodOptions?.indexOfFirst { it.label == "Voice call"}!!
+            }else {
+                methodIndex = methodOptions?.indexOfFirst { it.label == "SMS"}!!
+            }
+            remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.selectedOption =
+                    remidiation?.form?.visibleFields?.get(0)?.options?.get(1)?.form?.visibleFields?.get(0)?.options?.get(methodIndex)
+            makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+        }
+    }
+
+    @PluginMethod
+    @Throws(JSONException::class)
+    fun selectAlternateAuthenticator(call: PluginCall) {
+        remidiation = idxResponseSession?.remediations?.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE);
+        selectAuthenticator(call)
     }
 
     @PluginMethod
     @Throws(JSONException::class)
     fun verifyOtp(call: PluginCall) {
-        remidiation?.form?.visibleFields?.get(0)?.form?.visibleFields?.get(0)?.value = call.getString("otp")
-        makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+//        remidiation?.form?.visibleFields?.get(0)?.form?.visibleFields?.get(0)?.value = call.getString("otp")
+//        makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+
+        idxResponseSession?.remediations?.firstOrNull {
+            it.type == IdxRemediation.Type.CHALLENGE_AUTHENTICATOR
+        }?.let {
+            val otpCode = call.getString("otp")
+            if (otpCode != null) {
+                it.form["credentials.passcode"]?.apply {
+                    value = otpCode
+                    makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+                }
+            }
+        }
     }
 
     @PluginMethod
@@ -96,7 +130,7 @@ class CapOktaIdxPlugin : Plugin() {
         idxResponseSession = idxResponse
         interactionCodeFlowSession = interactionCodeFlow
         if (idxResponse.messages.size > 0) {
-            call.reject(idxResponse.messages.get(0).message)
+            call.reject(idxResponse.messages.get(0).message, idxResponse.messages.get(0).localizationKey)
         }else if (idxResponse.isLoginSuccessful) {
             remidiation = idxResponse.remediations.get(IdxRemediation.Type.ISSUE);
             GlobalScope.launch {
@@ -112,6 +146,7 @@ class CapOktaIdxPlugin : Plugin() {
             if (idxResponse.remediations.get(IdxRemediation.Type.IDENTIFY) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.IDENTIFY);
                 remidiation?.form?.visibleFields?.get(0)?.value = call.getString("username");
+                remidiation?.form?.visibleFields?.get(1)?.value = call.getString("rememberme");
                 makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
             }else if (idxResponse.remediations.get(IdxRemediation.Type.CHALLENGE_AUTHENTICATOR) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.CHALLENGE_AUTHENTICATOR);
@@ -119,9 +154,14 @@ class CapOktaIdxPlugin : Plugin() {
                     remidiation?.form?.visibleFields?.get(0)?.form?.visibleFields?.get(0)?.value = call.getString("password")
                     makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
                 }else {
-                    val ret = JSObject();
-                    ret.put("remediation", "verificationCode");
-                    call.resolve(ret)
+                    if (remidiation?.form?.visibleFields?.get(0)?.form?.visibleFields?.get(0)?.messages?.size!! > 0) {
+                        val errorMessages = remidiation?.form?.visibleFields?.get(0)?.form?.visibleFields?.get(0)?.messages
+                        call.reject(errorMessages?.get(0)?.message, errorMessages?.get(0)?.localizationKey)
+                    }else {
+                        val ret = JSObject();
+                        ret.put("remediation", remidiation?.name);
+                        call.resolve(ret)
+                    }
                 }
             }else if (idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE)
@@ -131,7 +171,7 @@ class CapOktaIdxPlugin : Plugin() {
                     makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
                 }else {
                     val ret = JSObject();
-                    ret.put("remediation", "select-authenticator-authenticate");
+                    ret.put("remediation", remidiation?.name);
                     ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
                     ret.put("phoneNumber", (idxResponse.authenticators.get(IdxAuthenticator.Kind.PHONE) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("phoneNumber"))
                     call.resolve(ret)

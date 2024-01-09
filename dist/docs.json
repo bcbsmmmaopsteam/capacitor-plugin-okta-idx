@@ -94,6 +94,22 @@
         "docs": "",
         "complexTypes": [],
         "slug": "resendotp"
+      },
+      {
+        "name": "selectAlternateAuthenticator",
+        "signature": "(data: any) => Promise<any>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "any"
+          }
+        ],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "selectalternateauthenticator"
       }
     ],
     "properties": []

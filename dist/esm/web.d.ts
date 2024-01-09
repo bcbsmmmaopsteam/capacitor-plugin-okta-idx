@@ -10,4 +10,5 @@ export declare class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin
     selectAuthenticator(data: any): Promise<any>;
     verifyOtp(data: any): Promise<any>;
     resendOtp(): Promise<any>;
+    selectAlternateAuthenticator(data: any): Promise<any>;
 }
