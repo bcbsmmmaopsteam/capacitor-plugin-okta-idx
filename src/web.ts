@@ -8,15 +8,6 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
 
   private authClient: any;
 
-  initializeOkta(data: any): void {
-    this.authClient = new OktaAuth({
-        issuer: data.issuer,
-        clientId: data.clientId,
-        redirectUri: data.redirectUri,
-        scopes: (data.scopes).split(' '),
-      });
-  }
-
   fetchTokens(data: any): Promise<any> {
 
     // window.sessionStorage.clear();

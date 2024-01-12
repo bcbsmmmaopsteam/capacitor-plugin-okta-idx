@@ -10,14 +10,6 @@ const CapOktaIdx = core.registerPlugin('CapOktaIdx', {
 });
 
 class CapOktaIdxWeb extends core.WebPlugin {
-    initializeOkta(data) {
-        this.authClient = new oktaAuthJs.OktaAuth({
-            issuer: data.issuer,
-            clientId: data.clientId,
-            redirectUri: data.redirectUri,
-            scopes: (data.scopes).split(' '),
-        });
-    }
     fetchTokens(data) {
         // window.sessionStorage.clear();
         // window.localStorage.clear();

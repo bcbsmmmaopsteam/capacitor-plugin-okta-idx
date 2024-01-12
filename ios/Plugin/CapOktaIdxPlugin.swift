@@ -78,7 +78,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
         self.response = response
         let username = call.getString("username") ?? ""
         let password = call.getString("password") ?? ""
-        
+        let rememberme = call.getBool("rememberme") ?? false
         if let message = response.messages.allMessages.first {
             call.reject(message.message, message.localizationKey)
             return
@@ -90,7 +90,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
            let rememberMeField = remediation["rememberMe"] {
             
             usernameField.value = username
-            rememberMeField.value = call.getString("rememberme") ?? ""
+            rememberMeField.value = rememberme
             remediation["credentials.passcode"]?.value = password
             
             self.remediationProcess(call, remediation: remediation)

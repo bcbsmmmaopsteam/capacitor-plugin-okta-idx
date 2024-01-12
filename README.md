@@ -13,7 +13,6 @@ npx cap sync
 
 <docgen-index>
 
-* [`initializeOkta(...)`](#initializeokta)
 * [`fetchTokens(...)`](#fetchtokens)
 * [`refreshToken(...)`](#refreshtoken)
 * [`selectAuthenticator(...)`](#selectauthenticator)
@@ -25,19 +24,6 @@ npx cap sync
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
-
-### initializeOkta(...)
-
-```typescript
-initializeOkta(data: any) => void
-```
-
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
-
---------------------
-
 
 ### fetchTokens(...)
 

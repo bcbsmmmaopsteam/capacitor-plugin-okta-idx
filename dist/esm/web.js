@@ -1,14 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 import { AuthenticatorKey, IdxStatus, OktaAuth } from '@okta/okta-auth-js';
 export class CapOktaIdxWeb extends WebPlugin {
-    initializeOkta(data) {
-        this.authClient = new OktaAuth({
-            issuer: data.issuer,
-            clientId: data.clientId,
-            redirectUri: data.redirectUri,
-            scopes: (data.scopes).split(' '),
-        });
-    }
     fetchTokens(data) {
         // window.sessionStorage.clear();
         // window.localStorage.clear();

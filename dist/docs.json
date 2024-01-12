@@ -6,22 +6,6 @@
     "tags": [],
     "methods": [
       {
-        "name": "initializeOkta",
-        "signature": "(data: any) => void",
-        "parameters": [
-          {
-            "name": "data",
-            "docs": "",
-            "type": "any"
-          }
-        ],
-        "returns": "void",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [],
-        "slug": "initializeokta"
-      },
-      {
         "name": "fetchTokens",
         "signature": "(data: any) => Promise<any>",
         "parameters": [
