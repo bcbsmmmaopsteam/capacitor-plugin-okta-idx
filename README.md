@@ -15,6 +15,10 @@ npx cap sync
 
 * [`fetchTokens(...)`](#fetchtokens)
 * [`refreshToken(...)`](#refreshtoken)
+* [`selectAuthenticator(...)`](#selectauthenticator)
+* [`verifyOtp(...)`](#verifyotp)
+* [`resendOtp()`](#resendotp)
+* [`selectAlternateAuthenticator(...)`](#selectalternateauthenticator)
 
 </docgen-index>
 
@@ -40,6 +44,62 @@ fetchTokens(data: any) => Promise<any>
 
 ```typescript
 refreshToken(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### selectAuthenticator(...)
+
+```typescript
+selectAuthenticator(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### verifyOtp(...)
+
+```typescript
+verifyOtp(data: any) => Promise<any>
+```
+
+| Param      | Type             |
+| ---------- | ---------------- |
+| **`data`** | <code>any</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### resendOtp()
+
+```typescript
+resendOtp() => Promise<any>
+```
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### selectAlternateAuthenticator(...)
+
+```typescript
+selectAlternateAuthenticator(data: any) => Promise<any>
 ```
 
 | Param      | Type             |

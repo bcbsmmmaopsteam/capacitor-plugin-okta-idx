@@ -36,6 +36,64 @@
         "docs": "",
         "complexTypes": [],
         "slug": "refreshtoken"
+      },
+      {
+        "name": "selectAuthenticator",
+        "signature": "(data: any) => Promise<any>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "any"
+          }
+        ],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "selectauthenticator"
+      },
+      {
+        "name": "verifyOtp",
+        "signature": "(data: any) => Promise<any>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "any"
+          }
+        ],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "verifyotp"
+      },
+      {
+        "name": "resendOtp",
+        "signature": "() => Promise<any>",
+        "parameters": [],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "resendotp"
+      },
+      {
+        "name": "selectAlternateAuthenticator",
+        "signature": "(data: any) => Promise<any>",
+        "parameters": [
+          {
+            "name": "data",
+            "docs": "",
+            "type": "any"
+          }
+        ],
+        "returns": "Promise<any>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "selectalternateauthenticator"
       }
     ],
     "properties": []
