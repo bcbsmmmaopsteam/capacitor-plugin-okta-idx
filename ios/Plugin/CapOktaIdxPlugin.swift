@@ -110,9 +110,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
             return
         }
         else if let remediation = response.remediations[.authenticatorVerificationData] {
-            let emailAuthenticators: OktaIdx.Authenticator? = response.authenticators.first(where: {option in
-                option.type == OktaIdx.Authenticator.Kind.email
-            }) ?? nil
+            let emailAuthenticators: OktaIdx.Authenticator? = response.authenticators.current
             let emailCapability: Capability.Profile = emailAuthenticators?.capabilities[0] as! Capability.Profile
             call.resolve([
                 "remediation": remediation.name,
