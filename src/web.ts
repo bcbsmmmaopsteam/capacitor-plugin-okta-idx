@@ -85,6 +85,12 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
       // if (authToken.nextStep.inputs[0].name === 'authenticator') {
       //     authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_EMAIL});
       //   }
+    } else if (authToken?.nextStep?.name === 'authenticator-verification-data' && authToken?.nextStep?.inputs && authToken?.nextStep?.inputs?.length > 0) {
+        resolve({
+          remediation: authToken?.nextStep?.name,
+          email: authToken?.nextStep?.authenticator?.profile?.email
+        })
+        return;
     }
 
     if (authToken.status === IdxStatus.PENDING) {
@@ -112,12 +118,13 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
     return new Promise((resolve, reject) => {
       
       (async () => { 
-        let authToken;
-        if (data?.type === 'email') {
-          authToken = await this.authClient.idx.proceed({authenticator: AuthenticatorKey.OKTA_EMAIL, methodType: data?.type});
-        }else if (data?.type === 'phone') {
-          authToken = await this.authClient.idx.proceed({authenticator: AuthenticatorKey.PHONE_NUMBER, methodType: data?.methodType});
+        let payload;
+        if (data?.remediation === 'authenticator-verification-data') {
+          payload = {methodType: data?.methodType}
+        }else {
+          payload = data?.type === 'email' ? {authenticator: AuthenticatorKey.OKTA_EMAIL, methodType: data?.methodType} : {authenticator: AuthenticatorKey.PHONE_NUMBER, methodType: data?.methodType}
         }
+        const authToken = await this.authClient.idx.proceed(payload);
         await this.proceed(authToken, this.authClient, data, resolve, reject);
 
       })().catch(err => {

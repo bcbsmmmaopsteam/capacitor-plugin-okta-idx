@@ -41,7 +41,7 @@ export class CapOktaIdxWeb extends WebPlugin {
         });
     }
     async proceed(authToken, authClient, data, resolve, reject) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, _24;
         const username = data.username;
         const password = data.password;
         if (((_a = authToken === null || authToken === void 0 ? void 0 : authToken.messages) === null || _a === void 0 ? void 0 : _a.length) > 0) {
@@ -82,17 +82,24 @@ export class CapOktaIdxWeb extends WebPlugin {
             //     authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_EMAIL});
             //   }
         }
+        else if (((_5 = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _5 === void 0 ? void 0 : _5.name) === 'authenticator-verification-data' && ((_6 = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _6 === void 0 ? void 0 : _6.inputs) && ((_8 = (_7 = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _7 === void 0 ? void 0 : _7.inputs) === null || _8 === void 0 ? void 0 : _8.length) > 0) {
+            resolve({
+                remediation: (_9 = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _9 === void 0 ? void 0 : _9.name,
+                email: (_12 = (_11 = (_10 = authToken === null || authToken === void 0 ? void 0 : authToken.nextStep) === null || _10 === void 0 ? void 0 : _10.authenticator) === null || _11 === void 0 ? void 0 : _11.profile) === null || _12 === void 0 ? void 0 : _12.email
+            });
+            return;
+        }
         if (authToken.status === IdxStatus.PENDING) {
             await this.proceed(authToken, authClient, data, resolve, reject);
         }
         else if (authToken.status === IdxStatus.SUCCESS) {
             const tokenResponse = {
-                access_token: (_6 = (_5 = authToken.tokens) === null || _5 === void 0 ? void 0 : _5.accessToken) === null || _6 === void 0 ? void 0 : _6.accessToken,
-                refresh_token: (_8 = (_7 = authToken.tokens) === null || _7 === void 0 ? void 0 : _7.refreshToken) === null || _8 === void 0 ? void 0 : _8.refreshToken,
-                scope: (_10 = (_9 = authToken.tokens) === null || _9 === void 0 ? void 0 : _9.accessToken) === null || _10 === void 0 ? void 0 : _10.scopes.join(' '),
-                id_token: (_12 = (_11 = authToken.tokens) === null || _11 === void 0 ? void 0 : _11.idToken) === null || _12 === void 0 ? void 0 : _12.idToken,
-                token_type: (_14 = (_13 = authToken.tokens) === null || _13 === void 0 ? void 0 : _13.accessToken) === null || _14 === void 0 ? void 0 : _14.tokenType,
-                expires_in: (_16 = (_15 = authToken.tokens) === null || _15 === void 0 ? void 0 : _15.accessToken) === null || _16 === void 0 ? void 0 : _16.expiresAt
+                access_token: (_14 = (_13 = authToken.tokens) === null || _13 === void 0 ? void 0 : _13.accessToken) === null || _14 === void 0 ? void 0 : _14.accessToken,
+                refresh_token: (_16 = (_15 = authToken.tokens) === null || _15 === void 0 ? void 0 : _15.refreshToken) === null || _16 === void 0 ? void 0 : _16.refreshToken,
+                scope: (_18 = (_17 = authToken.tokens) === null || _17 === void 0 ? void 0 : _17.accessToken) === null || _18 === void 0 ? void 0 : _18.scopes.join(' '),
+                id_token: (_20 = (_19 = authToken.tokens) === null || _19 === void 0 ? void 0 : _19.idToken) === null || _20 === void 0 ? void 0 : _20.idToken,
+                token_type: (_22 = (_21 = authToken.tokens) === null || _21 === void 0 ? void 0 : _21.accessToken) === null || _22 === void 0 ? void 0 : _22.tokenType,
+                expires_in: (_24 = (_23 = authToken.tokens) === null || _23 === void 0 ? void 0 : _23.accessToken) === null || _24 === void 0 ? void 0 : _24.expiresAt
             };
             resolve(tokenResponse);
         }
@@ -105,13 +112,14 @@ export class CapOktaIdxWeb extends WebPlugin {
     selectAuthenticator(data) {
         return new Promise((resolve, reject) => {
             (async () => {
-                let authToken;
-                if ((data === null || data === void 0 ? void 0 : data.type) === 'email') {
-                    authToken = await this.authClient.idx.proceed({ authenticator: AuthenticatorKey.OKTA_EMAIL, methodType: data === null || data === void 0 ? void 0 : data.type });
+                let payload;
+                if ((data === null || data === void 0 ? void 0 : data.remediation) === 'authenticator-verification-data') {
+                    payload = { methodType: data === null || data === void 0 ? void 0 : data.methodType };
                 }
-                else if ((data === null || data === void 0 ? void 0 : data.type) === 'phone') {
-                    authToken = await this.authClient.idx.proceed({ authenticator: AuthenticatorKey.PHONE_NUMBER, methodType: data === null || data === void 0 ? void 0 : data.methodType });
+                else {
+                    payload = (data === null || data === void 0 ? void 0 : data.type) === 'email' ? { authenticator: AuthenticatorKey.OKTA_EMAIL, methodType: data === null || data === void 0 ? void 0 : data.methodType } : { authenticator: AuthenticatorKey.PHONE_NUMBER, methodType: data === null || data === void 0 ? void 0 : data.methodType };
                 }
+                const authToken = await this.authClient.idx.proceed(payload);
                 await this.proceed(authToken, this.authClient, data, resolve, reject);
             })().catch(err => {
                 reject(err);

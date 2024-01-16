@@ -8,7 +8,7 @@ import OktaIdx
  */
 @objc(CapOktaIdxPlugin)
 public class CapOktaIdxPlugin: CAPPlugin {
-
+    
     
     var flow: (InteractionCodeFlow)? = nil
     var response: Response? = nil
@@ -19,26 +19,26 @@ public class CapOktaIdxPlugin: CAPPlugin {
         let clientId = call.getString("clientId") ?? ""
         let redirectUri = call.getString("redirectUri") ?? ""
         let scopes = call.getString("scopes") ?? ""
-
+        
         let flow = InteractionCodeFlow(
             issuer: URL(string: issuer)!,
             clientId: clientId,
             scopes: scopes,
             redirectUri: URL(string: redirectUri)!)
         
-            flow.start { result in
-                switch result {
-                case .success(let response):
-                    self.proceed(call, response: response)
-                    
-                    break
-                case .failure(_):
-                    break
-                }
-
+        flow.start { result in
+            switch result {
+            case .success(let response):
+                self.proceed(call, response: response)
+                
+                break
+            case .failure(_):
+                break
             }
-        
+            
         }
+        
+    }
     
     @objc func refreshToken(_ call: CAPPluginCall) {
         let issuer = call.getString("issuer") ?? ""
@@ -109,9 +109,20 @@ public class CapOktaIdxPlugin: CAPPlugin {
             }
             return
         }
+        else if let remediation = response.remediations[.authenticatorVerificationData] {
+            let emailAuthenticators: OktaIdx.Authenticator? = response.authenticators.first(where: {option in
+                option.type == OktaIdx.Authenticator.Kind.email
+            }) ?? nil
+            let emailCapability: Capability.Profile = emailAuthenticators?.capabilities[0] as! Capability.Profile
+            call.resolve([
+                "remediation": remediation.name,
+                "email": emailCapability.values.first?.value ?? ""
+            ])
+            return
+        }
         else if let remediation = response.remediations[.selectAuthenticatorAuthenticate],
                 let authenticatorField = remediation["authenticator"]
-    {
+        {
             let chosenOption = authenticatorField.options?.first(where: {option in
                 option.label == "Password"
             })
@@ -131,17 +142,12 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 ])
                 return
             }
-//            call.resolve(["remediation": remediation.name])
+            //            call.resolve(["remediation": remediation.name])
             authenticatorField.selectedOption = chosenOption
             
             self.remediationProcess(call, remediation: remediation)
             return
         }
-//        else if let remediation = response.remediations[.challengeAuthenticator] {
-//            call.reject(remediation.name)
-//            return
-//        }
-                    
         else if response.isLoginSuccessful {
             response.exchangeCode() { tokens in
                 switch tokens {
@@ -170,23 +176,23 @@ public class CapOktaIdxPlugin: CAPPlugin {
     }
     
     func remediationProcess(_ call: CAPPluginCall, remediation: Remediation) {
-            remediation.proceed() { response in
-                switch response {
-                case .success(let successResponse):
-                    self.proceed(call, response: successResponse)
-                    break
-                case .failure(_):
-                    call.reject("")
-                    break
-                }
-                return
+        remediation.proceed() { response in
+            switch response {
+            case .success(let successResponse):
+                self.proceed(call, response: successResponse)
+                break
+            case .failure(_):
+                call.reject("")
+                break
             }
+            return
+        }
         
     }
     
     @objc func selectAuthenticator(_ call: CAPPluginCall) {
         if let remediation = self.response?.remediations[.selectAuthenticatorAuthenticate],
-                let authenticatorField = remediation["authenticator"]
+           let authenticatorField = remediation["authenticator"]
         {
             if call.getString("type") == "email" {
                 let chosenOption = authenticatorField.options?.first(where: {option in
@@ -202,12 +208,12 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 let methodTypeField = phoneOption?["methodType"]
                 if call.getString("methodType") == "sms" {
                     smsMethod = methodTypeField?.options?.first(where: { option in
-                              option.label == "SMS"
-                          })
+                        option.label == "SMS"
+                    })
                 }else {
                     smsMethod = methodTypeField?.options?.first(where: { option in
-                              option.label == "Voice call"
-                          })
+                        option.label == "Voice call"
+                    })
                 }
                 authenticatorField.selectedOption = phoneOption
                 methodTypeField?.selectedOption = smsMethod
@@ -217,11 +223,11 @@ public class CapOktaIdxPlugin: CAPPlugin {
         }else {
             call.reject("")
         }
-       
+        
     }
     
     @objc func selectAlternateAuthenticator(_ call: CAPPluginCall) {
-//        if let remediation = self.response?.remediations[.selectAuthenticatorAuthenticate]
+        //        if let remediation = self.response?.remediations[.selectAuthenticatorAuthenticate]
         selectAuthenticator(call)
     }
     
@@ -250,7 +256,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
                 break
             }
             return
-            }
         }
     }
+}
 

@@ -61,23 +61,32 @@ class CapOktaIdxPlugin : Plugin() {
     @PluginMethod
     @Throws(JSONException::class)
     fun selectAuthenticator(call: PluginCall) {
-        if (call.getString("type") == "email") {
-            var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "okta_email" }!!
-            remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
-            makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
-        }else if (call.getString("type") == "phone") {
-            var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "phone_number" }!!
-            var methodOptions = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.options
-            remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
-            var methodIndex = 0;
-            if (call.getString("methodType") == "voice") {
-                methodIndex = methodOptions?.indexOfFirst { it.label == "Voice call"}!!
-            }else {
-                methodIndex = methodOptions?.indexOfFirst { it.label == "SMS"}!!
-            }
+        if (call.getString("remediation") == "authenticator-verification-data") {
+            var authRemediation = idxResponseSession?.remediations?.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE)
+            var index: Int = authRemediation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "okta_email" }!!
+            remidiation?.form?.visibleFields?.get(0)?.selectedOption = authRemediation?.form?.visibleFields?.get(0)?.options?.get(index)
             remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.selectedOption =
-                    remidiation?.form?.visibleFields?.get(0)?.options?.get(1)?.form?.visibleFields?.get(0)?.options?.get(methodIndex)
+                remidiation?.form?.visibleFields?.get(0)?.options?.get(1)?.form?.visibleFields?.get(0)?.options?.get(0)
             makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+        }else {
+            if (call.getString("type") == "email") {
+                var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "okta_email" }!!
+                remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
+                makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+            }else if (call.getString("type") == "phone") {
+                var index: Int = remidiation?.form?.visibleFields?.get(0)?.options?.indexOfFirst { it.authenticator?.key == "phone_number" }!!
+                var methodOptions = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.options
+                remidiation?.form?.visibleFields?.get(0)?.selectedOption = remidiation?.form?.visibleFields?.get(0)?.options?.get(index)
+                var methodIndex = 0;
+                if (call.getString("methodType") == "voice") {
+                    methodIndex = methodOptions?.indexOfFirst { it.label == "Voice call"}!!
+                }else {
+                    methodIndex = methodOptions?.indexOfFirst { it.label == "SMS"}!!
+                }
+                remidiation?.form?.visibleFields?.get(0)?.options?.get(index)?.form?.visibleFields?.get(0)?.selectedOption =
+                    remidiation?.form?.visibleFields?.get(0)?.options?.get(1)?.form?.visibleFields?.get(0)?.options?.get(methodIndex)
+                makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
+            }
         }
     }
 
@@ -163,6 +172,12 @@ class CapOktaIdxPlugin : Plugin() {
                         call.resolve(ret)
                     }
                 }
+            }else if (idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA) != null) {
+                remidiation = idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA)
+                val ret = JSObject();
+                ret.put("remediation", remidiation?.name);
+                ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
+                call.resolve(ret)
             }else if (idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE)
                 if (idxResponse.authenticators.get(IdxAuthenticator.Kind.PASSWORD) != null) {
