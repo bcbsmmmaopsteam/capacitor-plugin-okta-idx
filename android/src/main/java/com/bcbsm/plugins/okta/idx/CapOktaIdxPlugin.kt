@@ -155,7 +155,7 @@ class CapOktaIdxPlugin : Plugin() {
             if (idxResponse.remediations.get(IdxRemediation.Type.IDENTIFY) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.IDENTIFY);
                 remidiation?.form?.visibleFields?.get(0)?.value = call.getString("username");
-                remidiation?.form?.visibleFields?.get(1)?.value = call.getString("rememberme");
+                remidiation?.form?.visibleFields?.get(1)?.value = call.getBoolean("rememberme");
                 makeProceedRequest(call, remidiation, interactionCodeFlowSession!!);
             }else if (idxResponse.remediations.get(IdxRemediation.Type.CHALLENGE_AUTHENTICATOR) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.CHALLENGE_AUTHENTICATOR);
