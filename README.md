@@ -19,6 +19,8 @@ npx cap sync
 * [`verifyOtp(...)`](#verifyotp)
 * [`resendOtp()`](#resendotp)
 * [`selectAlternateAuthenticator(...)`](#selectalternateauthenticator)
+* [Interfaces](#interfaces)
+* [Enums](#enums)
 
 </docgen-index>
 
@@ -28,12 +30,12 @@ npx cap sync
 ### fetchTokens(...)
 
 ```typescript
-fetchTokens(data: any) => Promise<any>
+fetchTokens(data: TokenRequestOptions) => Promise<any>
 ```
 
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
+| Param      | Type                                                                |
+| ---------- | ------------------------------------------------------------------- |
+| **`data`** | <code><a href="#tokenrequestoptions">TokenRequestOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -43,12 +45,12 @@ fetchTokens(data: any) => Promise<any>
 ### refreshToken(...)
 
 ```typescript
-refreshToken(data: any) => Promise<any>
+refreshToken(data: TokenRequestOptions) => Promise<any>
 ```
 
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
+| Param      | Type                                                                |
+| ---------- | ------------------------------------------------------------------- |
+| **`data`** | <code><a href="#tokenrequestoptions">TokenRequestOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -58,12 +60,12 @@ refreshToken(data: any) => Promise<any>
 ### selectAuthenticator(...)
 
 ```typescript
-selectAuthenticator(data: any) => Promise<any>
+selectAuthenticator(data: AuthenticatorOptions) => Promise<any>
 ```
 
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
+| Param      | Type                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| **`data`** | <code><a href="#authenticatoroptions">AuthenticatorOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -73,12 +75,12 @@ selectAuthenticator(data: any) => Promise<any>
 ### verifyOtp(...)
 
 ```typescript
-verifyOtp(data: any) => Promise<any>
+verifyOtp(data: VarifyOptions) => Promise<any>
 ```
 
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
+| Param      | Type                                                    |
+| ---------- | ------------------------------------------------------- |
+| **`data`** | <code><a href="#varifyoptions">VarifyOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -99,15 +101,68 @@ resendOtp() => Promise<any>
 ### selectAlternateAuthenticator(...)
 
 ```typescript
-selectAlternateAuthenticator(data: any) => Promise<any>
+selectAlternateAuthenticator(data: AuthenticatorOptions) => Promise<any>
 ```
 
-| Param      | Type             |
-| ---------- | ---------------- |
-| **`data`** | <code>any</code> |
+| Param      | Type                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| **`data`** | <code><a href="#authenticatoroptions">AuthenticatorOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
 --------------------
+
+
+### Interfaces
+
+
+#### TokenRequestOptions
+
+| Prop                | Type                 |
+| ------------------- | -------------------- |
+| **`issuer`**        | <code>string</code>  |
+| **`clientId`**      | <code>string</code>  |
+| **`redirectUri`**   | <code>string</code>  |
+| **`scopes`**        | <code>string</code>  |
+| **`username`**      | <code>string</code>  |
+| **`password`**      | <code>string</code>  |
+| **`rememberme`**    | <code>boolean</code> |
+| **`refresh_token`** | <code>string</code>  |
+
+
+#### AuthenticatorOptions
+
+| Prop              | Type                                                                        |
+| ----------------- | --------------------------------------------------------------------------- |
+| **`type`**        | <code><a href="#authenticatortype">AuthenticatorType</a></code>             |
+| **`methodType`**  | <code><a href="#authenticatormethodtype">AuthenticatorMethodType</a></code> |
+| **`remediation`** | <code>string</code>                                                         |
+
+
+#### VarifyOptions
+
+| Prop      | Type                |
+| --------- | ------------------- |
+| **`otp`** | <code>string</code> |
+
+
+### Enums
+
+
+#### AuthenticatorType
+
+| Members     | Value                |
+| ----------- | -------------------- |
+| **`EMAIL`** | <code>'email'</code> |
+| **`PHONE`** | <code>'phone'</code> |
+
+
+#### AuthenticatorMethodType
+
+| Members     | Value                |
+| ----------- | -------------------- |
+| **`EMAIL`** | <code>'email'</code> |
+| **`VOICE`** | <code>'voice'</code> |
+| **`SMS`**   | <code>'sms'</code>   |
 
 </docgen-api>

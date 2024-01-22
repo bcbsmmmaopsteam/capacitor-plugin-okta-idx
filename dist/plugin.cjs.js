@@ -5,6 +5,18 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var core = require('@capacitor/core');
 var oktaAuthJs = require('@okta/okta-auth-js');
 
+exports.AuthenticatorType = void 0;
+(function (AuthenticatorType) {
+    AuthenticatorType["EMAIL"] = "email";
+    AuthenticatorType["PHONE"] = "phone";
+})(exports.AuthenticatorType || (exports.AuthenticatorType = {}));
+exports.AuthenticatorMethodType = void 0;
+(function (AuthenticatorMethodType) {
+    AuthenticatorMethodType["EMAIL"] = "email";
+    AuthenticatorMethodType["VOICE"] = "voice";
+    AuthenticatorMethodType["SMS"] = "sms";
+})(exports.AuthenticatorMethodType || (exports.AuthenticatorMethodType = {}));
+
 const CapOktaIdx = core.registerPlugin('CapOktaIdx', {
     web: () => Promise.resolve().then(function () { return web; }).then(m => new m.CapOktaIdxWeb()),
 });

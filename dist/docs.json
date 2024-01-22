@@ -7,66 +7,74 @@
     "methods": [
       {
         "name": "fetchTokens",
-        "signature": "(data: any) => Promise<any>",
+        "signature": "(data: TokenRequestOptions) => Promise<any>",
         "parameters": [
           {
             "name": "data",
             "docs": "",
-            "type": "any"
+            "type": "TokenRequestOptions"
           }
         ],
         "returns": "Promise<any>",
         "tags": [],
         "docs": "",
-        "complexTypes": [],
+        "complexTypes": [
+          "TokenRequestOptions"
+        ],
         "slug": "fetchtokens"
       },
       {
         "name": "refreshToken",
-        "signature": "(data: any) => Promise<any>",
+        "signature": "(data: TokenRequestOptions) => Promise<any>",
         "parameters": [
           {
             "name": "data",
             "docs": "",
-            "type": "any"
+            "type": "TokenRequestOptions"
           }
         ],
         "returns": "Promise<any>",
         "tags": [],
         "docs": "",
-        "complexTypes": [],
+        "complexTypes": [
+          "TokenRequestOptions"
+        ],
         "slug": "refreshtoken"
       },
       {
         "name": "selectAuthenticator",
-        "signature": "(data: any) => Promise<any>",
+        "signature": "(data: AuthenticatorOptions) => Promise<any>",
         "parameters": [
           {
             "name": "data",
             "docs": "",
-            "type": "any"
+            "type": "AuthenticatorOptions"
           }
         ],
         "returns": "Promise<any>",
         "tags": [],
         "docs": "",
-        "complexTypes": [],
+        "complexTypes": [
+          "AuthenticatorOptions"
+        ],
         "slug": "selectauthenticator"
       },
       {
         "name": "verifyOtp",
-        "signature": "(data: any) => Promise<any>",
+        "signature": "(data: VarifyOptions) => Promise<any>",
         "parameters": [
           {
             "name": "data",
             "docs": "",
-            "type": "any"
+            "type": "VarifyOptions"
           }
         ],
         "returns": "Promise<any>",
         "tags": [],
         "docs": "",
-        "complexTypes": [],
+        "complexTypes": [
+          "VarifyOptions"
+        ],
         "slug": "verifyotp"
       },
       {
@@ -81,25 +89,186 @@
       },
       {
         "name": "selectAlternateAuthenticator",
-        "signature": "(data: any) => Promise<any>",
+        "signature": "(data: AuthenticatorOptions) => Promise<any>",
         "parameters": [
           {
             "name": "data",
             "docs": "",
-            "type": "any"
+            "type": "AuthenticatorOptions"
           }
         ],
         "returns": "Promise<any>",
         "tags": [],
         "docs": "",
-        "complexTypes": [],
+        "complexTypes": [
+          "AuthenticatorOptions"
+        ],
         "slug": "selectalternateauthenticator"
       }
     ],
     "properties": []
   },
-  "interfaces": [],
-  "enums": [],
+  "interfaces": [
+    {
+      "name": "TokenRequestOptions",
+      "slug": "tokenrequestoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "issuer",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "clientId",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "redirectUri",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "scopes",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        },
+        {
+          "name": "username",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "password",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "rememberme",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "refresh_token",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "AuthenticatorOptions",
+      "slug": "authenticatoroptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "type",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "AuthenticatorType"
+          ],
+          "type": "AuthenticatorType"
+        },
+        {
+          "name": "methodType",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "AuthenticatorMethodType"
+          ],
+          "type": "AuthenticatorMethodType"
+        },
+        {
+          "name": "remediation",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "VarifyOptions",
+      "slug": "varifyoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "otp",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "name": "AuthenticatorType",
+      "slug": "authenticatortype",
+      "members": [
+        {
+          "name": "EMAIL",
+          "value": "'email'",
+          "tags": [],
+          "docs": ""
+        },
+        {
+          "name": "PHONE",
+          "value": "'phone'",
+          "tags": [],
+          "docs": ""
+        }
+      ]
+    },
+    {
+      "name": "AuthenticatorMethodType",
+      "slug": "authenticatormethodtype",
+      "members": [
+        {
+          "name": "EMAIL",
+          "value": "'email'",
+          "tags": [],
+          "docs": ""
+        },
+        {
+          "name": "VOICE",
+          "value": "'voice'",
+          "tags": [],
+          "docs": ""
+        },
+        {
+          "name": "SMS",
+          "value": "'sms'",
+          "tags": [],
+          "docs": ""
+        }
+      ]
+    }
+  ],
   "typeAliases": [],
   "pluginConfigs": []
 }
