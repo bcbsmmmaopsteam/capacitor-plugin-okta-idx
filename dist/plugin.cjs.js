@@ -5,6 +5,18 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var core = require('@capacitor/core');
 var oktaAuthJs = require('@okta/okta-auth-js');
 
+exports.AuthenticatorType = void 0;
+(function (AuthenticatorType) {
+    AuthenticatorType["EMAIL"] = "email";
+    AuthenticatorType["PHONE"] = "phone";
+})(exports.AuthenticatorType || (exports.AuthenticatorType = {}));
+exports.AuthenticatorMethodType = void 0;
+(function (AuthenticatorMethodType) {
+    AuthenticatorMethodType["EMAIL"] = "email";
+    AuthenticatorMethodType["VOICE"] = "voice";
+    AuthenticatorMethodType["SMS"] = "sms";
+})(exports.AuthenticatorMethodType || (exports.AuthenticatorMethodType = {}));
+
 const CapOktaIdx = core.registerPlugin('CapOktaIdx', {
     web: () => Promise.resolve().then(function () { return web; }).then(m => new m.CapOktaIdxWeb()),
 });
@@ -27,7 +39,10 @@ class CapOktaIdxWeb extends core.WebPlugin {
                 // authClient.tokenManager.clear();
                 // authClient.transactionManager.clear();
                 const authToken = await this.authClient.idx.startTransaction();
-                if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
+                if (authToken.status !== oktaAuthJs.IdxStatus.SUCCESS) {
+                    await this.proceed(authToken, this.authClient, data, resolve, reject);
+                }
+                else if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
                     const tokenResponse = {
                         access_token: (_b = (_a = authToken.tokens) === null || _a === void 0 ? void 0 : _a.accessToken) === null || _b === void 0 ? void 0 : _b.accessToken,
                         refresh_token: (_d = (_c = authToken.tokens) === null || _c === void 0 ? void 0 : _c.refreshToken) === null || _d === void 0 ? void 0 : _d.refreshToken,
@@ -37,9 +52,6 @@ class CapOktaIdxWeb extends core.WebPlugin {
                         expires_in: (_m = (_l = authToken.tokens) === null || _l === void 0 ? void 0 : _l.accessToken) === null || _m === void 0 ? void 0 : _m.expiresAt
                     };
                     resolve(tokenResponse);
-                }
-                else if (authToken.status === oktaAuthJs.IdxStatus.PENDING) {
-                    await this.proceed(authToken, this.authClient, data, resolve, reject);
                 }
                 else {
                     reject();
@@ -98,7 +110,7 @@ class CapOktaIdxWeb extends core.WebPlugin {
             });
             return;
         }
-        if (authToken.status === oktaAuthJs.IdxStatus.PENDING) {
+        if (authToken.status !== oktaAuthJs.IdxStatus.SUCCESS) {
             await this.proceed(authToken, authClient, data, resolve, reject);
         }
         else if (authToken.status === oktaAuthJs.IdxStatus.SUCCESS) {
