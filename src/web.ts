@@ -28,7 +28,9 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
         // authClient.transactionManager.clear();
         const authToken: IdxTransaction = await this.authClient.idx.startTransaction();
     
-        if (authToken.status === IdxStatus.SUCCESS) {
+        if (authToken.status !== IdxStatus.SUCCESS) {
+          await this.proceed(authToken, this.authClient, data, resolve, reject);
+        }else if (authToken.status === IdxStatus.SUCCESS) {
           const tokenResponse = {
             access_token: authToken.tokens?.accessToken?.accessToken,
             refresh_token: authToken.tokens?.refreshToken?.refreshToken,
@@ -38,8 +40,6 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
             expires_in: authToken.tokens?.accessToken?.expiresAt
           }
           resolve(tokenResponse);
-        }else if (authToken.status === IdxStatus.PENDING) {
-          await this.proceed(authToken, this.authClient, data, resolve, reject);
         } else {
           reject();
         }
@@ -93,7 +93,7 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
         return;
     }
 
-    if (authToken.status === IdxStatus.PENDING) {
+    if (authToken.status !== IdxStatus.SUCCESS) {
         await this.proceed(authToken, authClient, data, resolve, reject);
     }else if (authToken.status === IdxStatus.SUCCESS) {
       const tokenResponse = {

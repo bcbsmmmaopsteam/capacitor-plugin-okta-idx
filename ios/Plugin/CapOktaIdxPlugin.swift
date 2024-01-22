@@ -245,9 +245,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
         capability.resend() { response in
             switch response {
             case .success(let successResponse):
-                call.resolve([
-                    "remediation": ""
-                ])
+                self.proceed(call, response: successResponse)
                 break
             case .failure(_):
                 call.reject("")
