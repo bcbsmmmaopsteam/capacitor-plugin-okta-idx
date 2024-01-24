@@ -20,7 +20,7 @@ npx cap sync
 * [`resendOtp()`](#resendotp)
 * [`selectAlternateAuthenticator(...)`](#selectalternateauthenticator)
 * [Interfaces](#interfaces)
-* [Enums](#enums)
+* [Type Aliases](#type-aliases)
 
 </docgen-index>
 
@@ -146,23 +146,16 @@ selectAlternateAuthenticator(data: AuthenticatorOptions) => Promise<any>
 | **`otp`** | <code>string</code> |
 
 
-### Enums
+### Type Aliases
 
 
 #### AuthenticatorType
 
-| Members     | Value                |
-| ----------- | -------------------- |
-| **`EMAIL`** | <code>'email'</code> |
-| **`PHONE`** | <code>'phone'</code> |
+<code>'email' | 'phone'</code>
 
 
 #### AuthenticatorMethodType
 
-| Members     | Value                |
-| ----------- | -------------------- |
-| **`EMAIL`** | <code>'email'</code> |
-| **`VOICE`** | <code>'voice'</code> |
-| **`SMS`**   | <code>'sms'</code>   |
+<code>'email' | 'voice' | 'sms'</code>
 
 </docgen-api>

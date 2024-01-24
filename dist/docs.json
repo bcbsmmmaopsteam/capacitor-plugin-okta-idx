@@ -225,50 +225,42 @@
       ]
     }
   ],
-  "enums": [
+  "enums": [],
+  "typeAliases": [
     {
       "name": "AuthenticatorType",
       "slug": "authenticatortype",
-      "members": [
+      "docs": "",
+      "types": [
         {
-          "name": "EMAIL",
-          "value": "'email'",
-          "tags": [],
-          "docs": ""
+          "text": "'email'",
+          "complexTypes": []
         },
         {
-          "name": "PHONE",
-          "value": "'phone'",
-          "tags": [],
-          "docs": ""
+          "text": "'phone'",
+          "complexTypes": []
         }
       ]
     },
     {
       "name": "AuthenticatorMethodType",
       "slug": "authenticatormethodtype",
-      "members": [
+      "docs": "",
+      "types": [
         {
-          "name": "EMAIL",
-          "value": "'email'",
-          "tags": [],
-          "docs": ""
+          "text": "'email'",
+          "complexTypes": []
         },
         {
-          "name": "VOICE",
-          "value": "'voice'",
-          "tags": [],
-          "docs": ""
+          "text": "'voice'",
+          "complexTypes": []
         },
         {
-          "name": "SMS",
-          "value": "'sms'",
-          "tags": [],
-          "docs": ""
+          "text": "'sms'",
+          "complexTypes": []
         }
       ]
     }
   ],
-  "typeAliases": [],
   "pluginConfigs": []
 }

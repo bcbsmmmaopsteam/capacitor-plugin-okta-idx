@@ -1,18 +1,6 @@
 var capacitorCapOktaIdx = (function (exports, core, oktaAuthJs) {
     'use strict';
 
-    exports.AuthenticatorType = void 0;
-    (function (AuthenticatorType) {
-        AuthenticatorType["EMAIL"] = "email";
-        AuthenticatorType["PHONE"] = "phone";
-    })(exports.AuthenticatorType || (exports.AuthenticatorType = {}));
-    exports.AuthenticatorMethodType = void 0;
-    (function (AuthenticatorMethodType) {
-        AuthenticatorMethodType["EMAIL"] = "email";
-        AuthenticatorMethodType["VOICE"] = "voice";
-        AuthenticatorMethodType["SMS"] = "sms";
-    })(exports.AuthenticatorMethodType || (exports.AuthenticatorMethodType = {}));
-
     const CapOktaIdx = core.registerPlugin('CapOktaIdx', {
         web: () => Promise.resolve().then(function () { return web; }).then(m => new m.CapOktaIdxWeb()),
     });
