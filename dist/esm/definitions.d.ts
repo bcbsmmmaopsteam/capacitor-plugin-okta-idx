@@ -1,12 +1,5 @@
-export declare enum AuthenticatorType {
-    EMAIL = "email",
-    PHONE = "phone"
-}
-export declare enum AuthenticatorMethodType {
-    EMAIL = "email",
-    VOICE = "voice",
-    SMS = "sms"
-}
+export declare type AuthenticatorType = 'email' | 'phone';
+export declare type AuthenticatorMethodType = 'email' | 'voice' | 'sms';
 export interface TokenRequestOptions {
     issuer: string;
     clientId: string;
