@@ -52,43 +52,40 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
   async proceed(authToken: any, authClient: OktaAuth, data: any, resolve: any, reject: any): Promise<void> {
     const username: string = data.username;
     const password: string = data.password;
+    const stepData: any = this. getNextStep(authToken);
     if (authToken?.messages?.length > 0) {
       reject({message: authToken.messages[0]?.message, code: authToken.messages[0]?.i18n?.key});
-    }else if (authToken?.nextStep?.name == 'identify' && authToken?.nextStep?.inputs && authToken?.nextStep?.inputs?.length > 0) {
-      if (authToken.nextStep.inputs[0].name === 'username') {
-        authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: username, [authToken.nextStep.inputs[1].name]: data.rememberme});
+    }else if (stepData?.name === 'identify' && stepData?.nextStep?.inputs && stepData?.nextStep?.inputs?.length > 0) {
+      if (stepData?.nextStep.inputs[0].name === 'username') {
+        authToken = await authClient.idx.proceed({[stepData?.nextStep.inputs[0].name]: username, [stepData?.nextStep.inputs[1].name]: data.rememberme});
       }
-    } else if (authToken?.nextStep?.name == 'challenge-authenticator' && authToken?.nextStep?.inputs && authToken?.nextStep?.inputs?.length > 0) {
+    } else if (stepData?.name === 'challenge-authenticator' && stepData?.nextStep?.inputs && stepData?.nextStep?.inputs?.length > 0) {
       // let verificationCode = '1234';
-        if (authToken.nextStep.inputs[0].name === 'password') {
-          authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: password});
-        }else if (authToken.nextStep.inputs[0].name === 'verificationCode') {
-          resolve({remediation: authToken?.nextStep?.name });
+        if (stepData?.nextStep.inputs[0].name === 'password') {
+          authToken = await authClient.idx.proceed({[stepData?.nextStep.inputs[0].name]: password});
+        }else if (stepData?.nextStep.inputs[0].name === 'verificationCode') {
+          resolve({remediation: stepData?.nextStep?.name });
           return;
         }
     }
-    else if (authToken?.nextStep?.name == 'select-authenticator-authenticate' && authToken?.nextStep?.inputs && authToken?.nextStep?.inputs?.length > 0) {
-      const passwordOption = authToken?.nextStep?.inputs[0].options.find((res: any) => res.value === "okta_password")
+    else if (stepData?.name === 'select-authenticator-authenticate' && stepData?.nextStep?.inputs && stepData?.nextStep?.inputs?.length > 0) {
+      const passwordOption = stepData?.nextStep?.inputs[0].options.find((res: any) => res.value === "okta_password")
       if (passwordOption) {
-        authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_PASSWORD});
+        authToken = await authClient.idx.proceed({[stepData?.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_PASSWORD});
       }else {
         resolve({
-          remediation: authToken?.nextStep?.name,
-          email: authToken?.neededToProceed[0]?.value[0]?.options[0]?.relatesTo?.profile?.email,
-          phoneNumber: authToken?.neededToProceed[0]?.value[0]?.options[1]?.relatesTo?.profile?.phoneNumber
+          remediation: stepData?.name,
+          email: authToken?.context?.authenticatorEnrollments?.value[0]?.profile?.email,
+          phoneNumber: authToken?.context?.authenticatorEnrollments?.value[1]?.profile?.phoneNumber
         })
         return;
       }
-      // else {
-      //   resolve({'remediation': authToken?.nextStep?.name});
-      // }
-      // if (authToken.nextStep.inputs[0].name === 'authenticator') {
-      //     authToken = await authClient.idx.proceed({[authToken.nextStep.inputs[0].name]: AuthenticatorKey.OKTA_EMAIL});
-      //   }
-    } else if (authToken?.nextStep?.name === 'authenticator-verification-data' && authToken?.nextStep?.inputs && authToken?.nextStep?.inputs?.length > 0) {
+    } else if (stepData?.name === 'authenticator-verification-data' && stepData?.nextStep?.inputs && stepData?.nextStep?.inputs?.length > 0) {
         resolve({
-          remediation: authToken?.nextStep?.name,
-          email: authToken?.nextStep?.authenticator?.profile?.email
+          remediation: stepData?.name,
+          email: authToken?.context?.authenticatorEnrollments?.value[0]?.profile?.email,
+          phoneNumber: authToken.context.authenticatorEnrollments.value[1].profile.phoneNumber
+
         })
         return;
     }
@@ -108,6 +105,21 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
     }
   }
 
+  getNextStep(authToken: any) {
+    const stepOrder = ['identify', 'challenge-authenticator', 'select-authenticator-authenticate', 'authenticator-verification-data'];
+    for (let i=0; i<stepOrder.length; i++) {
+      const nextStep = authToken?.availableSteps.find((step: any) => (step.name === stepOrder[i]) );
+      if (nextStep) {
+        return {
+          nextStep,
+          name: stepOrder[i]
+        }
+      }
+    }
+    return;
+    
+  }
+
   refreshToken(data: any): Promise<any> {
     return new Promise((resolve) => {
       resolve(data);
@@ -119,12 +131,17 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
       
       (async () => { 
         let payload;
+        let authToken;
         if (data?.remediation === 'authenticator-verification-data') {
           payload = {methodType: data?.methodType}
         }else {
-          payload = data?.type === 'email' ? {authenticator: AuthenticatorKey.OKTA_EMAIL, methodType: data?.methodType} : {authenticator: AuthenticatorKey.PHONE_NUMBER, methodType: data?.methodType}
+          payload = data?.type === 'email' ? {authenticator: AuthenticatorKey.OKTA_EMAIL} : {authenticator: AuthenticatorKey.PHONE_NUMBER}
         }
-        const authToken = await this.authClient.idx.proceed(payload);
+        authToken = await this.authClient.idx.proceed(payload);
+        const nextStep = authToken?.availableSteps.find((step: any) => (step.name === 'authenticator-verification-data') );
+        if (nextStep) {
+          authToken = await this.authClient.idx.proceed({methodType: data?.methodType});
+        }
         await this.proceed(authToken, this.authClient, data, resolve, reject);
 
       })().catch(err => {
@@ -137,7 +154,7 @@ export class CapOktaIdxWeb extends WebPlugin implements CapOktaIdxPlugin {
     return new Promise((resolve, reject) => {
       
       (async () => { 
-        const authToken = await this.authClient.idx.proceed({verificationCode: data?.otp});
+        const authToken = await this.authClient.idx.proceed({authenticator: AuthenticatorKey.OKTA_VERIFY, verificationCode: data?.otp});
 
         await this.proceed(authToken, this.authClient, data, resolve, reject);
 
