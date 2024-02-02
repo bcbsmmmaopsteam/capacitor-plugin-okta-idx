@@ -172,12 +172,6 @@ class CapOktaIdxPlugin : Plugin() {
                         call.resolve(ret)
                     }
                 }
-            }else if (idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA) != null) {
-                remidiation = idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA)
-                val ret = JSObject();
-                ret.put("remediation", remidiation?.name);
-                ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
-                call.resolve(ret)
             }else if (idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE) != null) {
                 remidiation = idxResponse.remediations.get(IdxRemediation.Type.SELECT_AUTHENTICATOR_AUTHENTICATE)
                 if (idxResponse.authenticators.get(IdxAuthenticator.Kind.PASSWORD) != null) {
@@ -191,6 +185,12 @@ class CapOktaIdxPlugin : Plugin() {
                     ret.put("phoneNumber", (idxResponse.authenticators.get(IdxAuthenticator.Kind.PHONE) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("phoneNumber"))
                     call.resolve(ret)
                 }
+            }else if (idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA) != null) {
+                remidiation = idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA)
+                val ret = JSObject();
+                ret.put("remediation", remidiation?.name);
+                ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
+                call.resolve(ret)
             }
         }
     }
