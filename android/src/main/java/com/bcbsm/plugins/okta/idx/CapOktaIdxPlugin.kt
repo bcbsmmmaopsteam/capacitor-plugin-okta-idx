@@ -181,8 +181,12 @@ class CapOktaIdxPlugin : Plugin() {
                 }else {
                     val ret = JSObject();
                     ret.put("remediation", remidiation?.name);
-                    ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
-                    ret.put("phoneNumber", (idxResponse.authenticators.get(IdxAuthenticator.Kind.PHONE) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("phoneNumber"))
+                    if (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) != null) {
+                        ret.put("email", (idxResponse.authenticators.get(IdxAuthenticator.Kind.EMAIL) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("email"))
+                    }
+                    if (idxResponse?.authenticators?.get(IdxAuthenticator.Kind.PHONE) != null) {
+                        ret.put("phoneNumber", (idxResponse.authenticators.get(IdxAuthenticator.Kind.PHONE) as IdxAuthenticator).capabilities.get<IdxProfileCapability>()?.profile?.get("phoneNumber"))
+                    }
                     call.resolve(ret)
                 }
             }else if (idxResponse.remediations.get(IdxRemediation.Type.AUTHENTICATOR_VERIFICATION_DATA) != null) {
