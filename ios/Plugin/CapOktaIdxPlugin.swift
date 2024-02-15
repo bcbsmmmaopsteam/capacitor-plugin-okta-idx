@@ -109,16 +109,7 @@ public class CapOktaIdxPlugin: CAPPlugin {
             }
             return
         }
-        else if let remediation = response.remediations[.authenticatorVerificationData] {
-            let emailAuthenticators: OktaIdx.Authenticator? = response.authenticators.current
-            let emailCapability: Capability.Profile = emailAuthenticators?.capabilities[0] as! Capability.Profile
-            call.resolve([
-                "remediation": remediation.name,
-                "email": emailCapability.values.first?.value ?? ""
-            ])
-            return
-        }
-        else if let remediation = response.remediations[.selectAuthenticatorAuthenticate],
+        else if response.authenticators.enrolled.count != 0, let remediation = response.remediations[.selectAuthenticatorAuthenticate],
                 let authenticatorField = remediation["authenticator"]
         {
             let chosenOption = authenticatorField.options?.first(where: {option in
@@ -144,6 +135,15 @@ public class CapOktaIdxPlugin: CAPPlugin {
             authenticatorField.selectedOption = chosenOption
             
             self.remediationProcess(call, remediation: remediation)
+            return
+        }
+        else if let remediation = response.remediations[.authenticatorVerificationData] {
+            let emailAuthenticators: OktaIdx.Authenticator? = response.authenticators.current
+            let emailCapability: Capability.Profile = emailAuthenticators?.capabilities[0] as! Capability.Profile
+            call.resolve([
+                "remediation": remediation.name,
+                "email": emailCapability.values.first?.value ?? ""
+            ])
             return
         }
         else if response.isLoginSuccessful {
