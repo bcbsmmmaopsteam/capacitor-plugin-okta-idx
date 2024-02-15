@@ -1,6 +1,6 @@
 {
   "name": "capacitor-plugin-okta-idx",
-  "version": "5.27.1",
+  "version": "5.27.2",
   "description": "Okta",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
